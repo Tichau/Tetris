@@ -1,6 +1,7 @@
 ﻿// <copyright file="Matrix.cs" company="BlobTeam">Copyright BlobTeam. All rights reserved.</copyright>
 
 using System.Collections;
+using System.Linq;
 
 using UnityEngine;
 
@@ -191,6 +192,13 @@ public class Matrix
 
                 if (isAtTheBottom)
                 {
+                    if (this.CheckDefeat())
+                    {
+                        this.speed = 0f;
+                        this.CurrentTetromino = null;
+                        return;
+                    }
+
                     this.CurrentTetromino = null;
 
                     this.CheckLines();
@@ -219,6 +227,17 @@ public class Matrix
             Bloc tetrominoBloc = this.CurrentTetromino.Blocs[index];
             this.SetBloc(tetrominoBloc.Position, tetrominoBloc);
         }
+    }
+
+    private bool CheckDefeat()
+    {
+        if (this.CurrentTetromino.Blocs.Any(bloc => bloc.Position.Y >= this.Height))
+        {
+            Debug.Log("DEFEAT !");
+            return true;
+        }
+
+        return false;
     }
 
     private void CheckLines()
