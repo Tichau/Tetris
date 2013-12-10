@@ -8,6 +8,7 @@ public class Bloc
     {
         this.Tetromino = tetromino;
         this.LocalPosition = localPosition;
+        this.LastRegisteredPosition = Position.Invalid;
     }
 
     public Position LastRegisteredPosition
@@ -28,7 +29,7 @@ public class Bloc
         {
             if (Tetromino == null)
             {
-                return this.LocalPosition;
+                return Position.Invalid;
             }
 
             return this.Tetromino.Position + this.LocalPosition.Rotate(this.Tetromino.Pivot, this.Tetromino.Angle);

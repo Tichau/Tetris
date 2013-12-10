@@ -15,6 +15,8 @@ public struct Position
         this.Y = y;
     }
 
+    public static Position Invalid = new Position(-1, -1);
+
     public static Position operator +(Position a, Position b)
     {
         return new Position(a.X + b.X, a.Y + b.Y);
@@ -24,12 +26,12 @@ public struct Position
     {
         return new Position(a.X - b.X, a.Y - b.Y);
     }
-    
+
     public Position Rotate(Vector2 pivot, float angleInDegree)
     {
         Vector2 relativePosition = new Vector2(this.X - pivot.x, this.Y - pivot.y);
 
-        if (Math.Abs(relativePosition.x - 0) < float.Epsilon && Math.Abs(relativePosition.y - 0) < float.Epsilon)
+        if (Math.Abs(relativePosition.x) < float.Epsilon && Math.Abs(relativePosition.y) < float.Epsilon)
         {
             return new Position(Mathf.RoundToInt(pivot.x), Mathf.RoundToInt(pivot.y));
         }

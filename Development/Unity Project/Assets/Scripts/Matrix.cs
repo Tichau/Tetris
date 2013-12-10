@@ -78,8 +78,7 @@ public class Matrix
     public void NewTetromino()
     {
         Tetromino tetromino = new Tetromino((Tetromino.TetrominoType)UnityEngine.Random.Range(0, 7));
-        //Tetromino tetromino = new Tetromino(Tetromino.TetrominoType.I);
-        tetromino.Position = new Position(this.Width / 2, this.Height - 5);
+        tetromino.Position = new Position(this.Width / 2 - 2, this.Height);
         this.CurrentTetromino = tetromino;
 
         for (int index = 0; index < this.CurrentTetromino.Blocs.Length; index++)
@@ -176,7 +175,7 @@ public class Matrix
             return;
         }
 
-        float time = UnityEngine.Time.time;
+        float time = Time.time;
         bool fall = time - this.lastTetrominoTime >= 1f / this.Speed;
 
         if (fall)
@@ -193,6 +192,9 @@ public class Matrix
                 if (isAtTheBottom)
                 {
                     this.CurrentTetromino = null;
+
+                    this.CheckLines();
+
                     this.NewTetromino();
                     return;
                 }
@@ -216,6 +218,45 @@ public class Matrix
         {
             Bloc tetrominoBloc = this.CurrentTetromino.Blocs[index];
             this.SetBloc(tetrominoBloc.Position, tetrominoBloc);
+        }
+    }
+
+    private void CheckLines()
+    {
+        int lineCount = 0;
+        for (int y = 0; y < this.Height; ++y)
+        {
+            bool lineComplete = true;
+            for (int x = 0; x < this.Width; ++x)
+            {
+                Bloc bloc = this.GetBloc(new Position(x, y));
+                lineComplete &= bloc != null;
+
+                if (!lineComplete)
+                {
+                    break;
+                }
+            }
+
+            if (lineComplete)
+            {
+                // Fall tetrominos.
+                for (int y2 = y; y2 < this.Height; ++y2)
+                {
+                    for (int x = 0; x < this.Width; ++x)
+                    {
+                        this.SetBloc(new Position(x, y2), this.GetBloc(new Position(x, y2 + 1)));
+                    }
+                }
+
+                y--;
+                lineCount++;
+            }
+        }
+
+        if (lineCount > 0)
+        {
+            Debug.Log(lineCount + " line(s)");
         }
     }
 
