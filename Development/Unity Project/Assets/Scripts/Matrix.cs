@@ -2,11 +2,13 @@
 
 using System.Collections;
 
+using UnityEngine;
+
 public class Matrix
 {
-    private float lastTetrominoTime = 0f;
+    private float lastTetrominoTime = float.MinValue;
 
-    private float speed = 5f;
+    private float speed = 0.5f;
 
     public Matrix(int width, int height)
     {
@@ -76,7 +78,8 @@ public class Matrix
     public void NewTetromino()
     {
         Tetromino tetromino = new Tetromino((Tetromino.TetrominoType)UnityEngine.Random.Range(0, 7));
-        tetromino.Position = new Position(this.Width / 2, this.Height);
+        //Tetromino tetromino = new Tetromino(Tetromino.TetrominoType.I);
+        tetromino.Position = new Position(this.Width / 2, this.Height - 5);
         this.CurrentTetromino = tetromino;
 
         for (int index = 0; index < this.CurrentTetromino.Blocs.Length; index++)
@@ -136,7 +139,34 @@ public class Matrix
 
     public void RotateRight()
     {
-        throw new System.NotImplementedException();
+        if (this.CurrentTetromino == null)
+        {
+            return;
+        }
+
+        int angle = (int)this.CurrentTetromino.Angle;
+        this.CurrentTetromino.Angle = (angle + 90) % 360;
+
+        bool isSomeBlocOnNewPosition = false;
+        for (int index = 0; index < this.CurrentTetromino.Blocs.Length; index++)
+        {
+            Bloc bloc = this.CurrentTetromino.Blocs[index];
+
+            isSomeBlocOnNewPosition |= bloc.Position.X < 0 || bloc.Position.X >= this.Width || bloc.Position.Y < 0;
+
+            Bloc blocAtPosition = this.GetBloc(bloc.Position);
+            isSomeBlocOnNewPosition |= blocAtPosition != null && blocAtPosition.Tetromino != bloc.Tetromino;
+
+            if (isSomeBlocOnNewPosition)
+            {
+                break;
+            }
+        }
+
+        if (isSomeBlocOnNewPosition)
+        {
+            this.CurrentTetromino.Angle = angle;
+        }
     }
 
     public void Update(float deltaTime)
@@ -147,25 +177,25 @@ public class Matrix
         }
 
         float time = UnityEngine.Time.time;
-        if (time - this.lastTetrominoTime < 1f / this.Speed)
+        bool fall = time - this.lastTetrominoTime >= 1f / this.Speed;
+
+        if (fall)
         {
-            return;
-        }
-
-        bool isAtTheBottom = false;
-        for (int index = 0; index < this.CurrentTetromino.Blocs.Length; index++)
-        {
-            Bloc tetrominoBloc = this.CurrentTetromino.Blocs[index];
-            isAtTheBottom |= tetrominoBloc.Position.Y == 0;
-
-            Bloc blocUnder = this.GetBloc(new Position(tetrominoBloc.Position.X, tetrominoBloc.Position.Y - 1));
-            isAtTheBottom |= blocUnder != null && blocUnder.Tetromino != tetrominoBloc.Tetromino;
-
-            if (isAtTheBottom)
+            bool isAtTheBottom = false;
+            for (int index = 0; index < this.CurrentTetromino.Blocs.Length; index++)
             {
-                this.CurrentTetromino = null;
-                this.NewTetromino();
-                return;
+                Bloc tetrominoBloc = this.CurrentTetromino.Blocs[index];
+                isAtTheBottom |= tetrominoBloc.Position.Y == 0;
+
+                Bloc blocUnder = this.GetBloc(new Position(tetrominoBloc.Position.X, tetrominoBloc.Position.Y - 1));
+                isAtTheBottom |= blocUnder != null && blocUnder.Tetromino != tetrominoBloc.Tetromino;
+
+                if (isAtTheBottom)
+                {
+                    this.CurrentTetromino = null;
+                    this.NewTetromino();
+                    return;
+                }
             }
         }
 
@@ -176,8 +206,11 @@ public class Matrix
             this.SetBloc(tetrominoBloc.LastRegisteredPosition, null);
         }
 
-        this.CurrentTetromino.Position = new Position(this.CurrentTetromino.Position.X, this.CurrentTetromino.Position.Y - 1);
-        this.lastTetrominoTime = time;
+        if (fall)
+        {
+            this.CurrentTetromino.Position = new Position(this.CurrentTetromino.Position.X, this.CurrentTetromino.Position.Y - 1);
+            this.lastTetrominoTime = time;
+        }
 
         for (int index = 0; index < this.CurrentTetromino.Blocs.Length; index++)
         {

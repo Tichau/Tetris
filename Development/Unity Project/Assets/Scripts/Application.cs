@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Application : MonoBehaviour
 {
-    [UnityEngine.SerializeField]
+    [SerializeField]
     private GameObject rendererPrefab;
 
     private Matrix matrix;

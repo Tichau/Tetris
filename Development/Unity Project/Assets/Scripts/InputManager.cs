@@ -48,7 +48,7 @@ public class InputManager : MonoBehaviour
         if (Input.GetKey(KeyCode.UpArrow))
         {
             this.lastInputTime = Time.time;
-            Application.Instance.Input(Application.PlayerAction.Left);
+            Application.Instance.Input(Application.PlayerAction.RotateRight);
         }
     }
 }

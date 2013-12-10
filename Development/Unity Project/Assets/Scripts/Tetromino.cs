@@ -3,6 +3,8 @@
 using System;
 using System.Collections;
 
+using UnityEngine;
+
 public class Tetromino
 {
     public enum TetrominoType
@@ -28,6 +30,7 @@ public class Tetromino
                 this.Blocs[1] = new Bloc(this, new Position(1, 0));
                 this.Blocs[2] = new Bloc(this, new Position(2, 0));
                 this.Blocs[3] = new Bloc(this, new Position(3, 0));
+                this.Pivot = new Vector2(1.5f, 0.5f);
                 break;
             case Tetromino.TetrominoType.O:
                 this.Blocs = new Bloc[4];
@@ -35,6 +38,7 @@ public class Tetromino
                 this.Blocs[1] = new Bloc(this, new Position(1, 0));
                 this.Blocs[2] = new Bloc(this, new Position(0, 1));
                 this.Blocs[3] = new Bloc(this, new Position(1, 1));
+                this.Pivot = new Vector2(0.5f, 0.5f);
                 break;
             case Tetromino.TetrominoType.T:
                 this.Blocs = new Bloc[4];
@@ -42,6 +46,7 @@ public class Tetromino
                 this.Blocs[1] = new Bloc(this, new Position(1, 0));
                 this.Blocs[2] = new Bloc(this, new Position(2, 0));
                 this.Blocs[3] = new Bloc(this, new Position(1, 1));
+                this.Pivot = new Vector2(1f, 0f);
                 break;
             case Tetromino.TetrominoType.L:
                 this.Blocs = new Bloc[4];
@@ -49,6 +54,7 @@ public class Tetromino
                 this.Blocs[1] = new Bloc(this, new Position(1, 0));
                 this.Blocs[2] = new Bloc(this, new Position(2, 0));
                 this.Blocs[3] = new Bloc(this, new Position(2, 1));
+                this.Pivot = new Vector2(1f, 0f);
                 break;
             case Tetromino.TetrominoType.J:
                 this.Blocs = new Bloc[4];
@@ -56,6 +62,7 @@ public class Tetromino
                 this.Blocs[1] = new Bloc(this, new Position(1, 0));
                 this.Blocs[2] = new Bloc(this, new Position(2, 0));
                 this.Blocs[3] = new Bloc(this, new Position(0, 1));
+                this.Pivot = new Vector2(1f, 0f);
                 break;
             case Tetromino.TetrominoType.Z:
                 this.Blocs = new Bloc[4];
@@ -63,6 +70,7 @@ public class Tetromino
                 this.Blocs[1] = new Bloc(this, new Position(2, 0));
                 this.Blocs[2] = new Bloc(this, new Position(0, 1));
                 this.Blocs[3] = new Bloc(this, new Position(1, 1));
+                this.Pivot = new Vector2(1f, 0f);
                 break;
             case Tetromino.TetrominoType.S:
                 this.Blocs = new Bloc[4];
@@ -70,8 +78,21 @@ public class Tetromino
                 this.Blocs[1] = new Bloc(this, new Position(1, 0));
                 this.Blocs[2] = new Bloc(this, new Position(1, 1));
                 this.Blocs[3] = new Bloc(this, new Position(2, 1));
+                this.Pivot = new Vector2(1f, 0f);
                 break;
         }
+    }
+
+    public float Angle
+    {
+        get;
+        set;
+    }
+
+    public Vector2 Pivot
+    {
+        get; 
+        private set;
     }
 
     public Bloc[] Blocs

@@ -31,7 +31,7 @@ public class Bloc
                 return this.LocalPosition;
             }
 
-            return this.Tetromino.Position + this.LocalPosition;
+            return this.Tetromino.Position + this.LocalPosition.Rotate(this.Tetromino.Pivot, this.Tetromino.Angle);
         }
     }
 
