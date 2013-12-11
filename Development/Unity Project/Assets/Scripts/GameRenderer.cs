@@ -1,8 +1,8 @@
-﻿// <copyright file="MatrixRenderer.cs" company="BlobTeam">Copyright BlobTeam. All rights reserved.</copyright>
+﻿// <copyright file="GameRenderer.cs" company="BlobTeam">Copyright BlobTeam. All rights reserved.</copyright>
 
 using UnityEngine;
 
-public class MatrixRenderer : MonoBehaviour
+public class GameRenderer : MonoBehaviour
 {
     [UnityEngine.SerializeField]
     private GameObject blocPrefab;
@@ -16,7 +16,7 @@ public class MatrixRenderer : MonoBehaviour
     [UnityEngine.SerializeField]
     private int tileMarginSize;
 
-    private Matrix Matrix;
+    private Game game;
     private float tileMarginOffset;
 
     private BlocRenderer[,] blocRenderers;
@@ -24,9 +24,9 @@ public class MatrixRenderer : MonoBehaviour
 
     private bool initialized;
 
-    public void Initialize(Matrix matrix)
+    public void Initialize(Game game)
     {
-        this.Matrix = matrix;
+        this.game = game;
 
         if (this.tileSize == 0)
         {
@@ -50,10 +50,10 @@ public class MatrixRenderer : MonoBehaviour
         }
 
         // Initialize blocRenderers.
-        this.blocRenderers = new BlocRenderer[this.Matrix.Width, this.Matrix.Height];
-        for (int y = 0; y < this.Matrix.Height; ++y)
+        this.blocRenderers = new BlocRenderer[this.game.Width, this.game.Height];
+        for (int y = 0; y < this.game.Height; ++y)
         {
-            for (int x = 0; x < this.Matrix.Width; ++x)
+            for (int x = 0; x < this.game.Width; ++x)
             {
                 GameObject gameObject = GameObject.Instantiate(this.blocPrefab) as GameObject;
                 gameObject.transform.position = new Vector3(x - (x * this.tileMarginOffset), y - (y * this.tileMarginOffset));
@@ -75,14 +75,18 @@ public class MatrixRenderer : MonoBehaviour
             return;
         }
         
-        for (int y = 0; y < this.Matrix.Height; ++y)
+        for (int y = 0; y < this.game.Height; ++y)
         {
-            for (int x = 0; x < this.Matrix.Width; ++x)
+            for (int x = 0; x < this.game.Width; ++x)
             {
-                Bloc bloc = this.Matrix.Blocs[x, y];
+                Bloc bloc = this.game.Blocs[x, y];
+                Vector3 position = this.blocRenderers[x, y].gameObject.transform.position;
+
                 if (bloc == null)
                 {
                     this.blocRenderers[x, y].SetColor(BlocSpriteDescription.BlocColor.Black);
+                    
+                    this.blocRenderers[x, y].gameObject.transform.position = new Vector3(position.x, position.y, 0);
                     continue;
                 }
 
@@ -90,6 +94,8 @@ public class MatrixRenderer : MonoBehaviour
                 {
                     continue;
                 }
+
+                this.blocRenderers[x, y].gameObject.transform.position = new Vector3(position.x, position.y, -1);
 
                 switch (bloc.Tetromino.Type)
                 {

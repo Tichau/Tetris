@@ -4,12 +4,16 @@ using UnityEngine;
 
 public class Application : MonoBehaviour
 {
+    public Game Game
+    {
+        get; 
+        private set;
+    }
+
     [SerializeField]
     private GameObject rendererPrefab;
 
-    private Matrix matrix;
-
-    private MatrixRenderer renderer;
+    private GameRenderer renderer;
 
     public enum PlayerAction
     {
@@ -31,23 +35,23 @@ public class Application : MonoBehaviour
         switch (action)
         {
             case PlayerAction.Left:
-                this.matrix.Left();
+                this.Game.Left();
                 break;
 
             case PlayerAction.Right:
-                this.matrix.Right();
+                this.Game.Right();
                 break;
 
             case PlayerAction.RotateRight:
-                this.matrix.RotateRight();
+                this.Game.RotateRight();
                 break;
 
             case PlayerAction.SpeedUpStart:
-                this.matrix.SpeedOverride = 20f;
+                this.Game.SpeedOverride = 20f;
                 break;
 
             case PlayerAction.SpeedUpEnd:
-                this.matrix.SpeedOverride = -1f;
+                this.Game.SpeedOverride = -1f;
                 break;
         }
     }
@@ -56,18 +60,20 @@ public class Application : MonoBehaviour
     {
         Instance = this;
 
-        this.matrix = new Matrix(10, 22);
+        this.Game = new Game(10, 22);
 
         // View.
         GameObject rendererObject = Instantiate(this.rendererPrefab) as GameObject;
-        this.renderer = rendererObject.GetComponent<MatrixRenderer>();
-        this.renderer.Initialize(matrix);
+        this.renderer = rendererObject.GetComponent<GameRenderer>();
+        this.renderer.Initialize(this.Game);
 
-        this.matrix.NewTetromino();
+        this.Game.NewTetromino();
+
+        this.Game.StartGame();
     }
 
     private void LateUpdate()
     {
-        this.matrix.Update(UnityEngine.Time.deltaTime);
+        this.Game.Update(UnityEngine.Time.deltaTime);
     }
 }

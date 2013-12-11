@@ -1,21 +1,32 @@
-﻿// <copyright file="Matrix.cs" company="BlobTeam">Copyright BlobTeam. All rights reserved.</copyright>
+﻿// <copyright file="Game.cs" company="BlobTeam">Copyright BlobTeam. All rights reserved.</copyright>
 
+using System;
 using System.Collections;
 using System.Linq;
 
 using UnityEngine;
 
-public class Matrix
+public class Game
 {
+    private readonly int[] pointsAtLevel0 = new[] { 40, 100, 300, 1200 };
+
     private float lastTetrominoTime = float.MinValue;
 
-    private float speed = 0.5f;
+    private float speed = 0.0f;
 
-    public Matrix(int width, int height)
+    private TetrominoGenerator tetrominoGenerator = new TetrominoGenerator();
+
+    public Game(int width, int height)
     {
         this.Width = width;
         this.Height = height;
         this.Blocs = new Bloc[this.Width, this.Height];
+    }
+
+    public GameStatistics Statistics
+    {
+        get; 
+        private set;
     }
 
     public float SpeedOverride
@@ -61,6 +72,13 @@ public class Matrix
         private set; 
     }
 
+    public void StartGame()
+    {
+        this.Statistics = new GameStatistics();
+        this.speed = this.GetSpeed(this.Statistics.Level);
+        this.tetrominoGenerator.Reset();
+    }
+
     public Bloc GetBloc(Position position)
     {
         if (position.Y < 0 || position.Y >= this.Height)
@@ -78,8 +96,9 @@ public class Matrix
 
     public void NewTetromino()
     {
-        Tetromino tetromino = new Tetromino((Tetromino.TetrominoType)UnityEngine.Random.Range(0, 7));
-        tetromino.Position = new Position(this.Width / 2 - 2, this.Height);
+        Tetromino tetromino = this.tetrominoGenerator.PickNewTetromino();
+        Position originSpawnLocation = new Position((this.Width / 2) - 2, this.Height) + tetromino.SpawnLocationOffset;
+        tetromino.Position = originSpawnLocation;
         this.CurrentTetromino = tetromino;
 
         for (int index = 0; index < this.CurrentTetromino.Blocs.Length; index++)
@@ -203,6 +222,8 @@ public class Matrix
 
                     this.CheckLines();
 
+                    this.CheckLevel();
+
                     this.NewTetromino();
                     return;
                 }
@@ -226,6 +247,17 @@ public class Matrix
         {
             Bloc tetrominoBloc = this.CurrentTetromino.Blocs[index];
             this.SetBloc(tetrominoBloc.Position, tetrominoBloc);
+        }
+    }
+
+    private void CheckLevel()
+    {
+        int newLevel = this.Statistics.Lines / 10;
+        if (this.Statistics.Level != newLevel)
+        {
+            // level up !
+            this.Statistics.Level = newLevel;
+            this.speed = this.GetSpeed(newLevel);
         }
     }
 
@@ -275,7 +307,8 @@ public class Matrix
 
         if (lineCount > 0)
         {
-            Debug.Log(lineCount + " line(s)");
+            this.Statistics.Lines += lineCount;
+            this.Statistics.Score += this.GetScore(lineCount, this.Statistics.Level);
         }
     }
 
@@ -297,5 +330,21 @@ public class Matrix
         }
 
         this.Blocs[position.X, position.Y] = bloc;
+    }
+
+    private int GetScore(int numberOfLines, int level)
+    {
+        if (numberOfLines < 1 || numberOfLines > 4)
+        {
+            throw new ArgumentOutOfRangeException("numberOfLines", "The number of lines parameters must be 1, 2, 3 or 4 integer value.");
+        }
+
+        return this.pointsAtLevel0[numberOfLines - 1] * (level + 1);
+    }
+
+    private float GetSpeed(int level)
+    {
+        return 1.25f; // lvl 0
+        //return 30f; // lvl 19
     }
 }
