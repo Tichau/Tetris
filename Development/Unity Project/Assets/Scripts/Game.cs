@@ -10,6 +10,31 @@ public class Game
 {
     private readonly int[] pointsAtLevel0 = new[] { 40, 100, 300, 1200 };
 
+    private readonly float[] speedByLevel = new float[]
+                                   {
+                                       1.126981132075472f, 
+                                       1.218979591836735f,
+                                       1.327333333333333f,
+                                       1.456829268292683f,
+                                       1.614324324324324f,
+                                       1.81f,
+                                       2.133214285714286f,
+                                       2.715f,
+                                       3.513529411764706f,
+                                       5.43f,
+                                       5.973f,
+                                       6.636666666666667f,
+                                       7.46625f,
+                                       8.532857142857143f,
+                                       9.955f,
+                                       9.955f,
+                                       11.946f,
+                                       11.946f,
+                                       14.9325f,
+                                       14.9325f,
+                                       19.91f
+                                   };
+
     private float lastTetrominoTime = float.MinValue;
 
     private float speed = 0.0f;
@@ -344,7 +369,11 @@ public class Game
 
     private float GetSpeed(int level)
     {
-        return 1.25f; // lvl 0
-        //return 30f; // lvl 19
+        if (level >= this.speedByLevel.Length)
+        {
+            return this.speedByLevel[this.speedByLevel.Length - 1];
+        }
+
+        return this.speedByLevel[level];
     }
 }

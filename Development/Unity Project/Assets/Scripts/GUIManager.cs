@@ -8,6 +8,12 @@ public class GUIManager : MonoBehaviour
     [UnityEngine.SerializeField]
     private GUIText scoreLabel;
 
+    [UnityEngine.SerializeField]
+    private GUIText levelLabel;
+
+    [UnityEngine.SerializeField]
+    private GUIText linesLabel;
+
     private void Start()
     {
     }
@@ -15,5 +21,7 @@ public class GUIManager : MonoBehaviour
     private void Update()
     {
         this.scoreLabel.text = Application.Instance.Game.Statistics.Score.ToString();
+        this.levelLabel.text = string.Format("Level\t  {0}", Application.Instance.Game.Statistics.Level + 1);
+        this.linesLabel.text = string.Format("Lines\t  {0}", Application.Instance.Game.Statistics.Lines);
     }
 }
