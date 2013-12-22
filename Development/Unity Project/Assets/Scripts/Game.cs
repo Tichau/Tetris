@@ -40,6 +40,8 @@ public class Game
     private float speed = 0.0f;
 
     private TetrominoGenerator tetrominoGenerator = new TetrominoGenerator();
+    private bool isPaused;
+    private bool isGameStarted;
 
     public Game(int width, int height)
     {
@@ -99,9 +101,19 @@ public class Game
 
     public void StartGame()
     {
+        for (int x = 0; x < this.Width; x++)
+        {
+            for (int y = 0; y < this.Height; y++)
+            {
+                this.Blocs[x, y] = null;
+            }
+        }
+
         this.Statistics = new GameStatistics();
-        this.speed = this.GetSpeed(this.Statistics.Level);
+        this.SetSpeed(this.GetSpeed(this.Statistics.Level));
         this.tetrominoGenerator.Reset();
+        this.NewTetromino();
+        this.isGameStarted = true;
     }
 
     public Bloc GetBloc(Position position)
@@ -238,8 +250,7 @@ public class Game
                 {
                     if (this.CheckDefeat())
                     {
-                        this.speed = 0f;
-                        this.CurrentTetromino = null;
+                        this.EndGame();
                         return;
                     }
 
@@ -275,6 +286,14 @@ public class Game
         }
     }
 
+    private void EndGame()
+    {
+        HighScores.RegisterGameStatistic(this.Statistics);
+        this.speed = 0f;
+        this.CurrentTetromino = null;
+        this.isGameStarted = false;
+    }
+
     private void CheckLevel()
     {
         int newLevel = this.Statistics.Lines / 10;
@@ -282,7 +301,7 @@ public class Game
         {
             // level up !
             this.Statistics.Level = newLevel;
-            this.speed = this.GetSpeed(newLevel);
+            this.SetSpeed(this.GetSpeed(newLevel));
         }
     }
 
@@ -357,6 +376,12 @@ public class Game
         this.Blocs[position.X, position.Y] = bloc;
     }
 
+    private void SetSpeed(float newSpeed)
+    {
+        this.speed = newSpeed;
+        InputManager.Instance.DurationBetweenMoveInputs = 1f / (5f * newSpeed);
+    }
+
     private int GetScore(int numberOfLines, int level)
     {
         if (numberOfLines < 1 || numberOfLines > 4)
@@ -375,5 +400,25 @@ public class Game
         }
 
         return this.speedByLevel[level];
+    }
+
+    public void Pause()
+    {
+        if (!this.isGameStarted)
+        {
+            this.StartGame();
+            return;
+        }
+
+        if (this.isPaused)
+        {
+            this.isPaused = false;
+            this.speed = this.GetSpeed(this.Statistics.Level);
+        }
+        else
+        {
+            this.isPaused = true;
+            this.speed = 0;
+        }
     }
 }

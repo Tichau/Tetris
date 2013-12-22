@@ -1,17 +1,16 @@
 ﻿// <copyright file="GUIManager.cs" company="BlobTeam">Copyright BlobTeam. All rights reserved.</copyright>
 
 using UnityEngine;
-using System.Collections;
 
 public class GUIManager : MonoBehaviour
 {
-    [UnityEngine.SerializeField]
+    [SerializeField]
     private GUIText scoreLabel;
 
-    [UnityEngine.SerializeField]
+    [SerializeField]
     private GUIText levelLabel;
 
-    [UnityEngine.SerializeField]
+    [SerializeField]
     private GUIText linesLabel;
 
     private void Start()
@@ -20,8 +19,20 @@ public class GUIManager : MonoBehaviour
     
     private void Update()
     {
-        this.scoreLabel.text = Application.Instance.Game.Statistics.Score.ToString();
-        this.levelLabel.text = string.Format("Level\t  {0}", Application.Instance.Game.Statistics.Level + 1);
-        this.linesLabel.text = string.Format("Lines\t  {0}", Application.Instance.Game.Statistics.Lines);
+        if (Application.Instance.Game.Statistics == null)
+        {
+            this.scoreLabel.enabled = false;
+            this.levelLabel.enabled = false;
+            this.linesLabel.enabled = false;
+        }
+        else
+        {
+            this.scoreLabel.enabled = true;
+            this.levelLabel.enabled = true;
+            this.linesLabel.enabled = true;
+            this.scoreLabel.text = Application.Instance.Game.Statistics.Score.ToString();
+            this.levelLabel.text = string.Format("Level\t  {0}", Application.Instance.Game.Statistics.Level + 1);
+            this.linesLabel.text = string.Format("Lines\t  {0}", Application.Instance.Game.Statistics.Lines);
+        }
     }
 }

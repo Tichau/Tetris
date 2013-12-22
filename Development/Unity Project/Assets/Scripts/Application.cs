@@ -17,6 +17,7 @@ public class Application : MonoBehaviour
 
     public enum PlayerAction
     {
+        Pause,
         Left,
         Right,
         SpeedUpStart,
@@ -34,6 +35,10 @@ public class Application : MonoBehaviour
     {
         switch (action)
         {
+            case PlayerAction.Pause:
+                this.Game.Pause();
+                break;
+
             case PlayerAction.Left:
                 this.Game.Left();
                 break;
@@ -66,10 +71,6 @@ public class Application : MonoBehaviour
         GameObject rendererObject = Instantiate(this.rendererPrefab) as GameObject;
         this.renderer = rendererObject.GetComponent<GameRenderer>();
         this.renderer.Initialize(this.Game);
-
-        this.Game.NewTetromino();
-
-        this.Game.StartGame();
     }
 
     private void LateUpdate()

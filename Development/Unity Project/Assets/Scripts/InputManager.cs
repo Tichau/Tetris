@@ -6,13 +6,19 @@ public class InputManager : MonoBehaviour
 {
     private float lastInputTime;
 
+    public float DurationBetweenMoveInputs
+    {
+        get; 
+        set;
+    }
+
     public static InputManager Instance
     {
         get;
         private set;
     }
 
-    private void Start()
+    private void Awake()
     {
         Instance = this;
     }
@@ -28,27 +34,34 @@ public class InputManager : MonoBehaviour
             Application.Instance.Input(Application.PlayerAction.SpeedUpEnd);
         }
 
-        if (Time.time - this.lastInputTime < 0.2f)
+        if (Input.GetKeyUp(KeyCode.UpArrow))
         {
-            return;
-        }
-
-        if (Input.GetKey(KeyCode.RightArrow))
-        {
-            this.lastInputTime = Time.time;
-            Application.Instance.Input(Application.PlayerAction.Right);
-        }
-
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            this.lastInputTime = Time.time;
-            Application.Instance.Input(Application.PlayerAction.Left);
-        }
-
-        if (Input.GetKey(KeyCode.UpArrow))
-        {
-            this.lastInputTime = Time.time;
             Application.Instance.Input(Application.PlayerAction.RotateRight);
         }
+
+        if (Input.GetKeyUp(KeyCode.Escape) || Input.GetKeyUp(KeyCode.Pause) || Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.Return))
+        {
+            Application.Instance.Input(Application.PlayerAction.Pause);
+        }
+
+        if (Time.time - this.lastInputTime >= this.DurationBetweenMoveInputs)
+        {
+            if (Input.GetKey(KeyCode.RightArrow))
+            {
+                this.lastInputTime = Time.time;
+                Application.Instance.Input(Application.PlayerAction.Right);
+            }
+
+            if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                this.lastInputTime = Time.time;
+                Application.Instance.Input(Application.PlayerAction.Left);
+            }
+        }
+    }
+
+    public string GetName()
+    {
+        return "PLayer";
     }
 }

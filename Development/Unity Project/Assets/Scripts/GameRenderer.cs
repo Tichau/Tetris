@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class GameRenderer : MonoBehaviour
 {
-    [UnityEngine.SerializeField]
+    [SerializeField]
     private GameObject blocPrefab;
 
-    [UnityEngine.SerializeField]
+    [SerializeField]
     private BlocSpriteDescription[] spriteDescriptions;
 
-    [UnityEngine.SerializeField]
+    [SerializeField]
     private int tileSize;
 
-    [UnityEngine.SerializeField]
+    [SerializeField]
     private int tileMarginSize;
 
     private Game game;
