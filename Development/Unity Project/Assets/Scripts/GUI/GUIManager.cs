@@ -5,6 +5,12 @@ using UnityEngine;
 public class GUIManager : MonoBehaviour
 {
     [SerializeField]
+    private GameObject scorePanel;
+
+    [SerializeField]
+    private float scorePanelBottomOffset;
+
+    [SerializeField]
     private GUIText scoreLabel;
 
     [SerializeField]
@@ -15,8 +21,10 @@ public class GUIManager : MonoBehaviour
 
     private void Start()
     {
+        float y = this.scorePanelBottomOffset / Screen.height;
+        this.scorePanel.transform.position = new Vector3(0.7f, y, 0f);
     }
-    
+
     private void Update()
     {
         if (Application.Instance.Game.Statistics == null)

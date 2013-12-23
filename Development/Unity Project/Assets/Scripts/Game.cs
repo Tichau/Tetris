@@ -1,7 +1,6 @@
 ﻿// <copyright file="Game.cs" company="BlobTeam">Copyright BlobTeam. All rights reserved.</copyright>
 
 using System;
-using System.Collections;
 using System.Linq;
 
 using UnityEngine;
@@ -288,7 +287,12 @@ public class Game
 
     private void EndGame()
     {
-        HighScores.RegisterGameStatistic(this.Statistics);
+        this.SpeedOverride = -1f;
+        if (HighScores.CanRegisterGameStatistic(this.Statistics))
+        {
+            InputManager.Instance.RegisterGameStatistic(this.Statistics);
+        }
+
         this.speed = 0f;
         this.CurrentTetromino = null;
         this.isGameStarted = false;

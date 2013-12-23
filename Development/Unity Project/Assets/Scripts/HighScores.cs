@@ -1,13 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using UnityEngine;
 
 public static class HighScores
 {
-    private const int HighScoreCount = 10;
+    public const int HighScoreCount = 10;
+    public static event EventHandler HighScoresChange;
+
     private static List<GameStatistics> highScores = new List<GameStatistics>(HighScoreCount);
+
+    public static ReadOnlyCollection<GameStatistics> HighScoresCollection
+    {
+        get;
+        private set;
+    }
 
     static HighScores()
     {
+        HighScoresCollection = highScores.AsReadOnly();
+
         int index = 0;
         while (index < HighScoreCount)
         {
@@ -22,38 +34,30 @@ public static class HighScores
             highScores.Add(gameStatistics);
             index++;
         }
-
-        Debug.Log("Loaded scores:");
-        for (index = 0; index < highScores.Count; ++index)
-        {
-            Debug.Log((index + 1) + ": " + highScores[index]);
-        }
     }
 
-    public static void RegisterGameStatistic(GameStatistics gameStatistics)
+    public static bool CanRegisterGameStatistic(GameStatistics gameStatistics)
     {
         if (gameStatistics.Score <= 0)
         {
-            return;
+            return false;
         }
 
         if (highScores.Count >= HighScoreCount && gameStatistics.Score <= highScores[highScores.Count - 1].Score)
         {
-            return;
+            return false;
         }
 
-        gameStatistics.PlayerName = InputManager.Instance.GetName();
-        
-        RegisterScore(gameStatistics);
+        return true;
     }
 
-    private static void RegisterScore(GameStatistics gameStatistics)
+    public static void RegisterScore(GameStatistics gameStatistics)
     {
         bool scoreInserted = false;
 
         for (int index = 0; index < highScores.Count; ++index)
         {
-            if (highScores[index].Score > gameStatistics.Score)
+            if (highScores[index].Score >= gameStatistics.Score)
             {
                 continue;
             }
@@ -78,8 +82,11 @@ public static class HighScores
             highScores[index].Save(slotName);
             PlayerPrefs.SetInt(slotName, index);
             PlayerPrefs.Save();
+        }
 
-            Debug.Log((index + 1) + ": " + highScores[index]);
+        if (HighScoresChange != null)
+        {
+            HighScoresChange.Invoke(null, new EventArgs());
         }
     }
 }
