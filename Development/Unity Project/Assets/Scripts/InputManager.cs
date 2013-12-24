@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
-    public GUIStyle LightStyle;
-    public GUIStyle DarkStyle;
-
     private const float WindowWidth = 480f;
     private const float WindowHeight = 200f;
 
@@ -116,19 +113,19 @@ public class InputManager : MonoBehaviour
             return;
         }
 
-        GUI.ModalWindow(0, new Rect(Screen.width / 2f - WindowWidth / 2f, Screen.height / 2f - WindowHeight / 2f, WindowWidth, WindowHeight), DoMyWindow, "Congratulations you're in the high scores !", this.LightStyle);
+        GUI.ModalWindow(0, new Rect(Screen.width / 2f - WindowWidth / 2f, Screen.height / 2f - WindowHeight / 2f, WindowWidth, WindowHeight), DoMyWindow, "Congratulations you're in the high scores !", GUIManager.Instance.LightStyle);
     }
 
-    void DoMyWindow(int windowID)
+    private void DoMyWindow(int windowID)
     {
         const float labelWidth = 450;
         const float buttonWidth = 100;
         const float inputNameWidth = WindowWidth - 40f;
         const float inputNameHeight = 40f;
-        GUI.Label(new Rect(20, 50, labelWidth, inputNameHeight), "Enter you're name:", this.LightStyle);
-        this.playerInputName = GUI.TextField(new Rect(20, 100, inputNameWidth, inputNameHeight), this.playerInputName, 10, this.DarkStyle);
+        GUI.Label(new Rect(20, 50, labelWidth, inputNameHeight), "Enter you're name:", GUIManager.Instance.LightStyle);
+        this.playerInputName = GUI.TextField(new Rect(20, 100, inputNameWidth, inputNameHeight), this.playerInputName, 10, GUIManager.Instance.DarkStyle);
 
-        if (GUI.Button(new Rect(WindowWidth/2f - buttonWidth/2f, 150, buttonWidth, 40), "Register", this.DarkStyle))
+        if (GUI.Button(new Rect(WindowWidth / 2f - buttonWidth / 2f, 150, buttonWidth, 40), "Register", GUIManager.Instance.DarkStyle))
         {
             this.statisticToRegister.PlayerName = this.playerInputName;
             HighScores.RegisterScore(this.statisticToRegister);

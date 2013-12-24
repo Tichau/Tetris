@@ -39,8 +39,7 @@ public class Game
     private float speed = 0.0f;
 
     private TetrominoGenerator tetrominoGenerator = new TetrominoGenerator();
-    private bool isPaused;
-    private bool isGameStarted;
+   
     private int startLevel = 0;
 
     public Game(int width, int height)
@@ -48,6 +47,18 @@ public class Game
         this.Width = width;
         this.Height = height;
         this.Blocs = new Bloc[this.Width, this.Height];
+    }
+
+    public bool IsGameStarted
+    {
+        get;
+        private set;
+    }
+
+    public bool IsPaused
+    {
+        get;
+        private set;
     }
 
     public GameStatistics Statistics
@@ -116,7 +127,7 @@ public class Game
         this.SetSpeed(this.GetSpeed(this.Statistics.Level));
         this.tetrominoGenerator.Reset();
         this.NewTetromino();
-        this.isGameStarted = true;
+        this.IsGameStarted = true;
     }
 
     public Bloc GetBloc(Position position)
@@ -321,7 +332,7 @@ public class Game
 
         this.speed = 0f;
         this.CurrentTetromino = null;
-        this.isGameStarted = false;
+        this.IsGameStarted = false;
     }
 
     private void CheckLevel()
@@ -433,20 +444,20 @@ public class Game
 
     public void Pause()
     {
-        if (!this.isGameStarted)
+        if (!this.IsGameStarted)
         {
             this.StartGame();
             return;
         }
 
-        if (this.isPaused)
+        if (this.IsPaused)
         {
-            this.isPaused = false;
+            this.IsPaused = false;
             this.speed = this.GetSpeed(this.Statistics.Level);
         }
         else
         {
-            this.isPaused = true;
+            this.IsPaused = true;
             this.speed = 0;
         }
     }

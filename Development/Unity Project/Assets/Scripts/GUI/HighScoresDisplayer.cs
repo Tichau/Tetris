@@ -60,8 +60,4 @@ public class HighScoresDisplayer : MonoBehaviour
             scoreLine.ScoreLabel.text = gameStatistics.Score.ToString();
         }
     }
-
-    private void Update()
-    {
-    }
 }
