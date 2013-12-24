@@ -75,6 +75,6 @@ public class Application : MonoBehaviour
 
     private void LateUpdate()
     {
-        this.Game.Update(UnityEngine.Time.deltaTime);
+        this.Game.Update(Time.deltaTime);
     }
 }

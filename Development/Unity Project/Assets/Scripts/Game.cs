@@ -41,6 +41,7 @@ public class Game
     private TetrominoGenerator tetrominoGenerator = new TetrominoGenerator();
     private bool isPaused;
     private bool isGameStarted;
+    private int startLevel = 0;
 
     public Game(int width, int height)
     {
@@ -98,7 +99,7 @@ public class Game
         private set; 
     }
 
-    public void StartGame()
+    public void StartGame(int startLevel = 0)
     {
         for (int x = 0; x < this.Width; x++)
         {
@@ -108,7 +109,10 @@ public class Game
             }
         }
 
+        this.startLevel = startLevel;
+
         this.Statistics = new GameStatistics();
+        this.Statistics.Level = startLevel;
         this.SetSpeed(this.GetSpeed(this.Statistics.Level));
         this.tetrominoGenerator.Reset();
         this.NewTetromino();
@@ -165,7 +169,7 @@ public class Game
             }
         }
 
-        this.CurrentTetromino.Position = new Position(this.CurrentTetromino.Position.X + 1, this.CurrentTetromino.Position.Y);
+        this.MoveCurrentTetromino(new Position(this.CurrentTetromino.Position.X + 1, this.CurrentTetromino.Position.Y), this.CurrentTetromino.Angle);
     }
 
     public void Left()
@@ -189,7 +193,7 @@ public class Game
             }
         }
 
-        this.CurrentTetromino.Position = new Position(this.CurrentTetromino.Position.X - 1, this.CurrentTetromino.Position.Y);
+        this.MoveCurrentTetromino(new Position(this.CurrentTetromino.Position.X - 1, this.CurrentTetromino.Position.Y), this.CurrentTetromino.Angle);
     }
 
     public void RotateRight()
@@ -200,7 +204,8 @@ public class Game
         }
 
         int angle = (int)this.CurrentTetromino.Angle;
-        this.CurrentTetromino.Angle = (angle + 90) % 360;
+        float newAngle = (angle + 90)%360;
+        this.CurrentTetromino.Angle = newAngle;
 
         bool isSomeBlocOnNewPosition = false;
         for (int index = 0; index < this.CurrentTetromino.Blocs.Length; index++)
@@ -218,9 +223,30 @@ public class Game
             }
         }
 
-        if (isSomeBlocOnNewPosition)
+        this.CurrentTetromino.Angle = angle;
+
+        if (!isSomeBlocOnNewPosition)
         {
-            this.CurrentTetromino.Angle = angle;
+            this.MoveCurrentTetromino(this.CurrentTetromino.Position, newAngle);
+        }
+    }
+
+    public void MoveCurrentTetromino(Position newPosition, float angle)
+    {
+        // Clear old positions.
+        for (int index = 0; index < this.CurrentTetromino.Blocs.Length; index++)
+        {
+            Bloc tetrominoBloc = this.CurrentTetromino.Blocs[index];
+            this.SetBloc(tetrominoBloc.LastRegisteredPosition, null);
+        }
+
+        this.CurrentTetromino.Position = newPosition;
+        this.CurrentTetromino.Angle = angle;
+
+        for (int index = 0; index < this.CurrentTetromino.Blocs.Length; index++)
+        {
+            Bloc tetrominoBloc = this.CurrentTetromino.Blocs[index];
+            this.SetBloc(tetrominoBloc.Position, tetrominoBloc);
         }
     }
 
@@ -300,7 +326,7 @@ public class Game
 
     private void CheckLevel()
     {
-        int newLevel = this.Statistics.Lines / 10;
+        int newLevel = this.Statistics.Lines / 10 + this.startLevel;
         if (this.Statistics.Level != newLevel)
         {
             // level up !
@@ -313,7 +339,6 @@ public class Game
     {
         if (this.CurrentTetromino.Blocs.Any(bloc => bloc.Position.Y >= this.Height))
         {
-            Debug.Log("DEFEAT !");
             return true;
         }
 
