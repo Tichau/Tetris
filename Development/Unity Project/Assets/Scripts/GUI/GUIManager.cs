@@ -14,6 +14,9 @@ public class GUIManager : MonoBehaviour
     private GameObject scorePanel;
 
     [SerializeField]
+    private GameObject piecePreviewPanel;
+
+    [SerializeField]
     private float scorePanelBottomOffset;
 
     [SerializeField]
@@ -44,6 +47,15 @@ public class GUIManager : MonoBehaviour
 
     private void Update()
     {
+        if (Application.Instance.Game.IsGameStarted)
+        {
+            this.piecePreviewPanel.SetActive(true);
+        }
+        else
+        {
+            this.piecePreviewPanel.SetActive(false);
+        }
+
         if (Application.Instance.Game.Statistics == null)
         {
             this.scorePanel.SetActive(false);
