@@ -14,6 +14,9 @@ public class InputManager : MonoBehaviour
     private string playerInputName = "Player";
     private GameStatistics statisticToRegister;
 
+    private const float DurationBeforeMoveInputRepetition = 0.15f;
+    private bool moveInputRepetitionMode = false;
+
     public float DurationBetweenMoveInputs
     {
         get; 
@@ -47,29 +50,62 @@ public class InputManager : MonoBehaviour
             Application.Instance.Input(Application.PlayerAction.SpeedUpEnd);
         }
 
-        if (Input.GetKeyUp(KeyCode.UpArrow))
-        {
-            Application.Instance.Input(Application.PlayerAction.RotateRight);
-        }
-
         if (Input.GetKeyUp(KeyCode.Escape) || Input.GetKeyUp(KeyCode.Pause) || Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.Return))
         {
             Application.Instance.Input(Application.PlayerAction.Pause);
         }
 
-        if (Time.time - this.lastInputTime >= this.DurationBetweenMoveInputs)
+        // Rotation
+        if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            if (Input.GetKey(KeyCode.RightArrow))
-            {
-                this.lastInputTime = Time.time;
-                Application.Instance.Input(Application.PlayerAction.Right);
-            }
+            Application.Instance.Input(Application.PlayerAction.RotateRight);
+        }
 
-            if (Input.GetKey(KeyCode.LeftArrow))
+        // Left & Right moves.
+        bool rightMove = Input.GetKeyDown(KeyCode.RightArrow);
+        bool leftMove = Input.GetKeyDown(KeyCode.LeftArrow);
+
+        if (Input.GetKeyUp(KeyCode.RightArrow))
+        {
+            this.moveInputRepetitionMode = false;   
+        }
+
+        if (Input.GetKeyUp(KeyCode.LeftArrow))
+        {
+            this.moveInputRepetitionMode = false;
+        }
+
+        // Repetition.
+        if (!rightMove && !leftMove)
+        {
+            float deltaTime = Time.time - this.lastInputTime;
+            if (this.moveInputRepetitionMode && deltaTime >= this.DurationBetweenMoveInputs ||
+                !this.moveInputRepetitionMode && deltaTime >= DurationBeforeMoveInputRepetition)
             {
-                this.lastInputTime = Time.time;
-                Application.Instance.Input(Application.PlayerAction.Left);
+                if (Input.GetKey(KeyCode.RightArrow))
+                {
+                    this.moveInputRepetitionMode = true;
+                    rightMove = true;
+                }
+
+                if (Input.GetKey(KeyCode.LeftArrow))
+                {
+                    this.moveInputRepetitionMode = true;
+                    leftMove = true;
+                }
             }
+        }
+
+        if (rightMove)
+        {
+            this.lastInputTime = Time.time;
+            Application.Instance.Input(Application.PlayerAction.Right);
+        }
+
+        if (leftMove)
+        {
+            this.lastInputTime = Time.time;
+            Application.Instance.Input(Application.PlayerAction.Left);
         }
     }
 
