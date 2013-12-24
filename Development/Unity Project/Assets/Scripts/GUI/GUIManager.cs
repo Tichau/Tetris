@@ -46,15 +46,11 @@ public class GUIManager : MonoBehaviour
     {
         if (Application.Instance.Game.Statistics == null)
         {
-            this.scoreLabel.enabled = false;
-            this.levelLabel.enabled = false;
-            this.linesLabel.enabled = false;
+            this.scorePanel.SetActive(false);
         }
         else
         {
-            this.scoreLabel.enabled = true;
-            this.levelLabel.enabled = true;
-            this.linesLabel.enabled = true;
+            this.scorePanel.SetActive(true);
             this.scoreLabel.text = Application.Instance.Game.Statistics.Score.ToString();
             this.levelLabel.text = string.Format("Level\t  {0}", Application.Instance.Game.Statistics.Level + 1);
             this.linesLabel.text = string.Format("Lines\t  {0}", Application.Instance.Game.Statistics.Lines);
@@ -65,9 +61,9 @@ public class GUIManager : MonoBehaviour
     {
         if (!Application.Instance.Game.IsGameStarted)
         {
-            const float labelWidth = 300;
-            const float labelHeight = 40;
-            GUI.Label(new Rect(Screen.width / 2f - labelWidth / 2f, Screen.height / 2f - labelHeight / 2f, labelWidth, labelHeight), "Press Enter to start a new game.", this.DarkStyle);
+            const float labelWidth = 370;
+            const float labelHeight = 50;
+            GUI.Label(new Rect(Screen.width / 2f - labelWidth / 2f, Screen.height / 2f - labelHeight / 2f, labelWidth, labelHeight), "Press Enter to start a new game", this.LightStyle);
         }
         else if (Application.Instance.Game.IsPaused)
         {

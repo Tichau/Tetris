@@ -5,12 +5,17 @@ public class HighScoresDisplayer : MonoBehaviour
 {
     public GameObject ScoreLinePrefab;
 
+    [SerializeField]
+    private GUIText titleLabel;
+
     private ScoreLine[] scoreLines;
 
     private void Start()
     {
         float firstOffset = 50f/Screen.height;
         float offset = 25f/Screen.height;
+
+        this.titleLabel.enabled = false;
 
         this.scoreLines = new ScoreLine[HighScores.HighScoreCount];
         for (int index = 0; index < HighScores.HighScoreCount; index++)
@@ -31,6 +36,8 @@ public class HighScoresDisplayer : MonoBehaviour
 
     private void HighScores_HighScoresChange(object sender, EventArgs e)
     {
+        this.titleLabel.enabled = HighScores.HighScoresCollection.Count > 0;
+
         for (int index = 0; index < this.scoreLines.Length; index++)
         {
             ScoreLine scoreLine = this.scoreLines[index];
