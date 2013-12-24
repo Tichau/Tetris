@@ -1,12 +1,15 @@
 ﻿// <copyright file="Game.cs" company="BlobTeam">Copyright BlobTeam. All rights reserved.</copyright>
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using UnityEngine;
 
-public class Game
+public class Game : BlocGrid
 {
+    public event EventHandler CurrentTetrominoChange;
+
     private readonly int[] pointsAtLevel0 = new[] { 40, 100, 300, 1200 };
 
     private readonly float[] speedByLevel = new float[]
@@ -38,15 +41,17 @@ public class Game
 
     private float speed = 0.0f;
 
-    private TetrominoGenerator tetrominoGenerator = new TetrominoGenerator();
+    private TetrominoGenerator tetrominoGenerator = new TetrominoGenerator(1);
    
     private int startLevel = 0;
 
-    public Game(int width, int height)
+    public Game(int width, int height) : base(width, height)
     {
-        this.Width = width;
-        this.Height = height;
-        this.Blocs = new Bloc[this.Width, this.Height];
+    }
+
+    public Queue<Tetromino.TetrominoType> NextTetrominos
+    {
+        get { return this.tetrominoGenerator.NextTetrominos; }
     }
 
     public bool IsGameStarted
@@ -86,24 +91,6 @@ public class Game
         }
     }
 
-    public int Height
-    {
-        get; 
-        private set;
-    }
-
-    public int Width
-    {
-        get;
-        private set;
-    }
-
-    public Bloc[,] Blocs
-    {
-        get;
-        private set;
-    }
-
     public Tetromino CurrentTetromino 
     { 
         get; 
@@ -112,13 +99,7 @@ public class Game
 
     public void StartGame(int startLevel = 0)
     {
-        for (int x = 0; x < this.Width; x++)
-        {
-            for (int y = 0; y < this.Height; y++)
-            {
-                this.Blocs[x, y] = null;
-            }
-        }
+        this.Clear();
 
         this.startLevel = startLevel;
 
@@ -130,24 +111,9 @@ public class Game
         this.IsGameStarted = true;
     }
 
-    public Bloc GetBloc(Position position)
-    {
-        if (position.Y < 0 || position.Y >= this.Height)
-        {
-            return null;
-        }
-
-        if (position.X < 0 || position.X >= this.Width)
-        {
-            return null;
-        }
-
-        return this.Blocs[position.X, position.Y];
-    }
-
     public void NewTetromino()
     {
-        Tetromino tetromino = this.tetrominoGenerator.PickNewTetromino();
+        Tetromino tetromino = this.tetrominoGenerator.PickNextTetromino();
         Position originSpawnLocation = new Position((this.Width / 2) - 2, this.Height) + tetromino.SpawnLocationOffset;
         tetromino.Position = originSpawnLocation;
         this.CurrentTetromino = tetromino;
@@ -156,6 +122,11 @@ public class Game
         {
             Bloc tetrominoBloc = this.CurrentTetromino.Blocs[index];
             this.SetBloc(tetrominoBloc.Position, tetrominoBloc);
+        }
+
+        if (this.CurrentTetrominoChange != null)
+        {
+            this.CurrentTetrominoChange.Invoke(this, null);
         }
     }
 
@@ -245,20 +216,12 @@ public class Game
     public void MoveCurrentTetromino(Position newPosition, float angle)
     {
         // Clear old positions.
-        for (int index = 0; index < this.CurrentTetromino.Blocs.Length; index++)
-        {
-            Bloc tetrominoBloc = this.CurrentTetromino.Blocs[index];
-            this.SetBloc(tetrominoBloc.LastRegisteredPosition, null);
-        }
+        this.ClearTetromino(this.CurrentTetromino);
 
         this.CurrentTetromino.Position = newPosition;
         this.CurrentTetromino.Angle = angle;
 
-        for (int index = 0; index < this.CurrentTetromino.Blocs.Length; index++)
-        {
-            Bloc tetrominoBloc = this.CurrentTetromino.Blocs[index];
-            this.SetBloc(tetrominoBloc.Position, tetrominoBloc);
-        }
+        this.SetTetromino(this.CurrentTetromino);
     }
 
     public void Update(float deltaTime)
@@ -394,26 +357,6 @@ public class Game
             this.Statistics.Lines += lineCount;
             this.Statistics.Score += this.GetScore(lineCount, this.Statistics.Level);
         }
-    }
-
-    private void SetBloc(Position position, Bloc bloc)
-    {
-        if (position.Y < 0 || position.Y >= this.Height)
-        {
-            return;
-        }
-
-        if (position.X < 0 || position.X >= this.Width)
-        {
-            return;
-        }
-
-        if (bloc != null)
-        {
-            bloc.LastRegisteredPosition = position;
-        }
-
-        this.Blocs[position.X, position.Y] = bloc;
     }
 
     private void SetSpeed(float newSpeed)

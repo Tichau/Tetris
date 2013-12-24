@@ -1,8 +1,8 @@
-﻿// <copyright file="GameRenderer.cs" company="BlobTeam">Copyright BlobTeam. All rights reserved.</copyright>
+﻿// <copyright file="BlocGridRenderer.cs" company="BlobTeam">Copyright BlobTeam. All rights reserved.</copyright>
 
 using UnityEngine;
 
-public class GameRenderer : MonoBehaviour
+public class BlocGridRenderer : MonoBehaviour
 {
     [SerializeField]
     private GameObject blocPrefab;
@@ -16,7 +16,7 @@ public class GameRenderer : MonoBehaviour
     [SerializeField]
     private int tileMarginSize;
 
-    private Game game;
+    private BlocGrid blocGrid;
     private float tileMarginOffset;
 
     private BlocRenderer[,] blocRenderers;
@@ -24,9 +24,21 @@ public class GameRenderer : MonoBehaviour
 
     private bool initialized;
 
-    public void Initialize(Game game)
+    public void OverrideBlocSpriteDescription(BlocSpriteDescription description)
     {
-        this.game = game;
+        for (int index = 0; index < this.spriteDescriptions.Length; index++)
+        {
+            if (this.spriteDescriptions[index].Color == description.Color)
+            {
+                this.spriteDescriptions[index] = description;
+                break;
+            }
+        }
+    }
+
+    public void Initialize(BlocGrid grid, Vector2 offsetPosition)
+    {
+        this.blocGrid = grid;
 
         if (this.tileSize == 0)
         {
@@ -50,13 +62,13 @@ public class GameRenderer : MonoBehaviour
         }
 
         // Initialize blocRenderers.
-        this.blocRenderers = new BlocRenderer[this.game.Width, this.game.Height];
-        for (int y = 0; y < this.game.Height; ++y)
+        this.blocRenderers = new BlocRenderer[this.blocGrid.Width, this.blocGrid.Height];
+        for (int y = 0; y < this.blocGrid.Height; ++y)
         {
-            for (int x = 0; x < this.game.Width; ++x)
+            for (int x = 0; x < this.blocGrid.Width; ++x)
             {
                 GameObject gameObject = GameObject.Instantiate(this.blocPrefab) as GameObject;
-                gameObject.transform.position = new Vector3(x - (x * this.tileMarginOffset), y - (y * this.tileMarginOffset));
+                gameObject.transform.position = new Vector3(offsetPosition.x + x - (x * this.tileMarginOffset), offsetPosition.y + y - (y * this.tileMarginOffset));
                 gameObject.transform.parent = this.gameObject.transform;
 
                 BlocRenderer blocRenderer = gameObject.GetComponent<BlocRenderer>();
@@ -75,11 +87,11 @@ public class GameRenderer : MonoBehaviour
             return;
         }
         
-        for (int y = 0; y < this.game.Height; ++y)
+        for (int y = 0; y < this.blocGrid.Height; ++y)
         {
-            for (int x = 0; x < this.game.Width; ++x)
+            for (int x = 0; x < this.blocGrid.Width; ++x)
             {
-                Bloc bloc = this.game.Blocs[x, y];
+                Bloc bloc = this.blocGrid.Blocs[x, y];
                 Vector3 position = this.blocRenderers[x, y].gameObject.transform.position;
 
                 if (bloc == null)

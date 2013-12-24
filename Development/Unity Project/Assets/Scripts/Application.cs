@@ -13,7 +13,7 @@ public class Application : MonoBehaviour
     [SerializeField]
     private GameObject rendererPrefab;
 
-    private GameRenderer renderer;
+    private BlocGridRenderer blocGridRenderer;
 
     public enum PlayerAction
     {
@@ -69,8 +69,8 @@ public class Application : MonoBehaviour
 
         // View.
         GameObject rendererObject = Instantiate(this.rendererPrefab) as GameObject;
-        this.renderer = rendererObject.GetComponent<GameRenderer>();
-        this.renderer.Initialize(this.Game);
+        this.blocGridRenderer = rendererObject.GetComponent<BlocGridRenderer>();
+        this.blocGridRenderer.Initialize(this.Game, Vector2.zero);
     }
 
     private void LateUpdate()

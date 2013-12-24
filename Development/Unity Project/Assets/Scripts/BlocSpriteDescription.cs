@@ -20,4 +20,10 @@ public class BlocSpriteDescription
         Red = 6,
         Yellow = 7,
     }
+
+    public BlocSpriteDescription(BlocColor color, UnityEngine.Sprite sprite)
+    {
+        this.Color = color;
+        this.Sprite = sprite;
+    }
 }

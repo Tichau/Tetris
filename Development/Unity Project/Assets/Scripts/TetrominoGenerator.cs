@@ -8,8 +8,9 @@ public class TetrominoGenerator
     private readonly List<Tetromino.TetrominoType> tetrominoPool = new List<Tetromino.TetrominoType>(7);
 
     private readonly Tetromino.TetrominoType[] tetrominoTypes;
+    private int previewCount;
 
-    public TetrominoGenerator()
+    public TetrominoGenerator(int previewCount)
     {
         Array values = System.Enum.GetValues(typeof(Tetromino.TetrominoType));
         this.tetrominoTypes = new Tetromino.TetrominoType[values.Length];
@@ -18,10 +19,33 @@ public class TetrominoGenerator
             this.tetrominoTypes[index] = (Tetromino.TetrominoType)values.GetValue(index);
         }
 
+        this.previewCount = previewCount;
+
         this.RefillPool();
+
+        this.NextTetrominos = new Queue<Tetromino.TetrominoType>(this.previewCount);
+        for (int index = 0; index < this.previewCount; ++index)
+        {
+            this.NextTetrominos.Enqueue(this.PickNewTetromino());
+        }
     }
 
-    public Tetromino PickNewTetromino()
+    public Queue<Tetromino.TetrominoType> NextTetrominos
+    {
+        get;
+        private set;
+    }
+
+    public Tetromino PickNextTetromino()
+    {
+        Tetromino.TetrominoType nextTetrominoType = this.NextTetrominos.Dequeue();
+
+        this.NextTetrominos.Enqueue(this.PickNewTetromino());
+
+        return new Tetromino(nextTetrominoType);
+    }
+
+    private Tetromino.TetrominoType PickNewTetromino()
     {
         Tetromino.TetrominoType tetrominoType = this.tetrominoPool[UnityEngine.Random.Range(0, this.tetrominoPool.Count)];
         this.tetrominoPool.Remove(tetrominoType);
@@ -30,7 +54,7 @@ public class TetrominoGenerator
             this.RefillPool();
         }
 
-        return new Tetromino(tetrominoType);
+        return tetrominoType;
     }
 
     private void RefillPool()
