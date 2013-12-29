@@ -1,70 +1,21 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class HighScoresDisplayer : MonoBehaviour
 {
-    public GameObject ScoreLinePrefab;
-
-    [SerializeField]
-    private GUIText titleLabel;
-
-    private ScoreLine[] scoreLines;
-
-    private void Start()
+    private void OnGUI()
     {
-        float firstOffset = 50f/Screen.height;
-        float offset = 25f/Screen.height;
+        const float firstOffset = 50f;
+        const float offset = 25f;
+        float top = 0.3f*Screen.height;
+        GUI.Label(new Rect(20f, top, 200f, 40f), Localization.GetLocalizedString("%HighScores"), GUIManager.Instance.BigTextStyle);
 
-        this.titleLabel.enabled = false;
-
-        this.scoreLines = new ScoreLine[HighScores.HighScoreCount];
-        for (int index = 0; index < HighScores.HighScoreCount; index++)
+        for (int index = 0; index < HighScores.HighScoresCollection.Count; index++)
         {
-            GameObject scoreLineGameObject = GameObject.Instantiate(this.ScoreLinePrefab) as GameObject;
-            scoreLineGameObject.transform.parent = this.transform;
-            scoreLineGameObject.transform.localPosition = new Vector3(0f, -firstOffset - index * offset, 0f);
-
-            ScoreLine scoreLine = scoreLineGameObject.GetComponent<ScoreLine>();
-            this.scoreLines[index] = scoreLine;
-
-            scoreLine.gameObject.SetActive(false);
-            this.HighScores_HighScoresChange(this, null);
-        }
-
-        HighScores.HighScoresChange += this.HighScores_HighScoresChange;
-    }
-
-    private void HighScores_HighScoresChange(object sender, EventArgs e)
-    {
-        this.titleLabel.enabled = HighScores.HighScoresCollection.Count > 0;
-
-        for (int index = 0; index < this.scoreLines.Length; index++)
-        {
-            ScoreLine scoreLine = this.scoreLines[index];
-            if (scoreLine == null)
-            {
-                Debug.LogWarning("Can't retrieve score line " + index);
-                continue;
-            }
-
-            if (index >= HighScores.HighScoresCollection.Count)
-            {
-                scoreLine.gameObject.SetActive(false);
-                continue;
-            }
-
             GameStatistics gameStatistics = HighScores.HighScoresCollection[index];
-            if (gameStatistics == null)
-            {
-                scoreLine.gameObject.SetActive(false);
-                continue;
-            }
-
-            scoreLine.gameObject.SetActive(true);
-
-            scoreLine.RankLabel.text = (index + 1).ToString();
-            scoreLine.PlayerLabel.text = gameStatistics.PlayerName;
-            scoreLine.ScoreLabel.text = gameStatistics.Score.ToString();
+            float scoreLineTop = top + firstOffset + index * offset;
+            GUI.Label(new Rect(20f, scoreLineTop, 200f, 30f), (index + 1).ToString(), GUIManager.Instance.SmallTextStyle);
+            GUI.Label(new Rect(50f, scoreLineTop, 200f, 30f), gameStatistics.PlayerName, GUIManager.Instance.SmallTextStyle);
+            GUI.Label(new Rect(200f, scoreLineTop, 70f, 30f), gameStatistics.Score.ToString(), GUIManager.Instance.RightAlignSmallTextStyle);
         }
     }
 }
