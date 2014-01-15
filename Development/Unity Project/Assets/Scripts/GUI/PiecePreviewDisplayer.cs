@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿// <copyright file="PiecePreviewDisplayer.cs" company="BlobTeam">Copyright BlobTeam. All rights reserved.</copyright>
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,7 +22,7 @@ public class PiecePreviewDisplayer : MonoBehaviour
         rendererObject.transform.parent = this.transform;
         rendererObject.transform.localPosition = Vector3.zero;
         BlocGridRenderer blocGridRenderer = rendererObject.GetComponent<BlocGridRenderer>();
-        blocGridRenderer.OverrideBlocSpriteDescription(new BlocSpriteDescription(BlocSpriteDescription.BlocColor.Black, backgroundTexture));
+        blocGridRenderer.OverrideBlocSpriteDescription(new BlocSpriteDescription(BlocSpriteDescription.BlocColor.Black, this.backgroundTexture));
         blocGridRenderer.Initialize(this.preview1, new Vector2(10.5f, 17.4f));
 
         while (Application.Instance == null || Application.Instance.Game == null)

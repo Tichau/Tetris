@@ -1,6 +1,14 @@
-﻿
+﻿// <copyright file="BlocGrid.cs" company="BlobTeam">Copyright BlobTeam. All rights reserved.</copyright>
+
 public class BlocGrid
 {
+    public BlocGrid(int width, int height)
+    {
+        this.Width = width;
+        this.Height = height;
+        this.Blocs = new Bloc[this.Width, this.Height];
+    }
+
     public Bloc[,] Blocs
     {
         get;
@@ -17,13 +25,6 @@ public class BlocGrid
     {
         get;
         private set;
-    }
-
-    public BlocGrid(int width, int height)
-    {
-        this.Width = width;
-        this.Height = height;
-        this.Blocs = new Bloc[this.Width, this.Height];
     }
 
     public void Clear()
@@ -61,6 +62,15 @@ public class BlocGrid
         }
     }
 
+    public void SetTetromino(Tetromino tetromino)
+    {
+        for (int index = 0; index < tetromino.Blocs.Length; index++)
+        {
+            Bloc tetrominoBloc = tetromino.Blocs[index];
+            this.SetBloc(tetrominoBloc.Position, tetrominoBloc);
+        }
+    }
+
     protected void SetBloc(Position position, Bloc bloc)
     {
         if (position.Y < 0 || position.Y >= this.Height)
@@ -79,14 +89,5 @@ public class BlocGrid
         }
 
         this.Blocs[position.X, position.Y] = bloc;
-    }
-
-    public void SetTetromino(Tetromino tetromino)
-    {
-        for (int index = 0; index < tetromino.Blocs.Length; index++)
-        {
-            Bloc tetrominoBloc = tetromino.Blocs[index];
-            this.SetBloc(tetrominoBloc.Position, tetrominoBloc);
-        }
     }
 }

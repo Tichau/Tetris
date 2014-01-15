@@ -20,7 +20,7 @@ public class CameraController : MonoBehaviour
         if (this.camera.aspect > 1.3f)
         {
             // Large mode.
-            this.transform.position = new Vector3(LeftWorldPosition + WidthWorldPosition / 2f, 10, -10);
+            this.transform.position = new Vector3(LeftWorldPosition + (WidthWorldPosition / 2f), 10, -10);
 
             GUIManager.Instance.Mode = GUIManager.GUIMode.Landscape;
         }
@@ -28,7 +28,7 @@ public class CameraController : MonoBehaviour
         {
             // Short mode
             Vector3 screenSizeInWorldUnit = this.camera.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height)) - this.camera.ScreenToWorldPoint(new Vector3(0, 0));
-            this.transform.position = new Vector3(screenSizeInWorldUnit.x / 2f - 1.5f, 10, -10);
+            this.transform.position = new Vector3((screenSizeInWorldUnit.x / 2f) - 1.5f, 10, -10);
 
             GUIManager.Instance.Mode = GUIManager.GUIMode.Portrait;
         }

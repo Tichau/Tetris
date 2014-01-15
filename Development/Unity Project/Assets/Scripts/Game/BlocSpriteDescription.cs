@@ -9,6 +9,12 @@ public class BlocSpriteDescription
     [UnityEngine.SerializeField]
     public UnityEngine.Sprite Sprite;
 
+    public BlocSpriteDescription(BlocColor color, UnityEngine.Sprite sprite)
+    {
+        this.Color = color;
+        this.Sprite = sprite;
+    }
+
     public enum BlocColor
     {
         Black = 0,
@@ -19,11 +25,5 @@ public class BlocSpriteDescription
         Purple = 5,
         Red = 6,
         Yellow = 7,
-    }
-
-    public BlocSpriteDescription(BlocColor color, UnityEngine.Sprite sprite)
-    {
-        this.Color = color;
-        this.Sprite = sprite;
     }
 }

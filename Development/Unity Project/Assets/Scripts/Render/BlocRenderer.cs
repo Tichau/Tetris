@@ -29,7 +29,7 @@ public class BlocRenderer : MonoBehaviour
         if (newColor != this.color)
         {
             this.color = newColor;
-            this.spriteRenderer.sprite = this.sprites[(int)color];
+            this.spriteRenderer.sprite = this.sprites[(int)this.color];
         }
     }
 }

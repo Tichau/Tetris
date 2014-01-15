@@ -6,6 +6,8 @@ using UnityEngine;
 
 public struct Position
 {
+    public static Position Invalid = new Position(-1, -1);
+
     public int X;
     public int Y;
     
@@ -14,8 +16,6 @@ public struct Position
         this.X = x;
         this.Y = y;
     }
-
-    public static Position Invalid = new Position(-1, -1);
 
     public static Position operator +(Position a, Position b)
     {

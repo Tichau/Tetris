@@ -8,8 +8,6 @@ using UnityEngine;
 
 public class Game : BlocGrid
 {
-    public event EventHandler CurrentTetrominoChange;
-
     private readonly int[] pointsAtLevel0 = new[] { 40, 100, 300, 1200 };
 
     private readonly float[] speedByLevel = new float[]
@@ -38,16 +36,16 @@ public class Game : BlocGrid
                                    };
 
     private float lastTetrominoTime = float.MinValue;
-
     private float speed = 0.0f;
-
     private TetrominoGenerator tetrominoGenerator = new TetrominoGenerator(1);
-   
     private int startLevel = 0;
-
-    public Game(int width, int height) : base(width, height)
+    
+    public Game(int width, int height)
+        : base(width, height)
     {
     }
+
+    public event EventHandler CurrentTetrominoChange;
 
     public Queue<Tetromino.TetrominoType> NextTetrominos
     {
@@ -186,7 +184,7 @@ public class Game : BlocGrid
         }
 
         int angle = (int)this.CurrentTetromino.Angle;
-        float newAngle = (angle + 90)%360;
+        float newAngle = (angle + 90) % 360;
         this.CurrentTetromino.Angle = newAngle;
 
         bool isSomeBlocOnNewPosition = false;
@@ -222,6 +220,26 @@ public class Game : BlocGrid
         this.CurrentTetromino.Angle = angle;
 
         this.SetTetromino(this.CurrentTetromino);
+    }
+
+    public void Pause()
+    {
+        if (!this.IsGameStarted)
+        {
+            this.StartGame();
+            return;
+        }
+
+        if (this.IsPaused)
+        {
+            this.IsPaused = false;
+            this.speed = this.GetSpeed(this.Statistics.Level);
+        }
+        else
+        {
+            this.IsPaused = true;
+            this.speed = 0;
+        }
     }
 
     public void Update(float deltaTime)
@@ -300,7 +318,7 @@ public class Game : BlocGrid
 
     private void CheckLevel()
     {
-        int newLevel = this.Statistics.Lines / 10 + this.startLevel;
+        int newLevel = (this.Statistics.Lines / 10) + this.startLevel;
         if (this.Statistics.Level != newLevel)
         {
             // level up !
@@ -383,25 +401,5 @@ public class Game : BlocGrid
         }
 
         return this.speedByLevel[level];
-    }
-
-    public void Pause()
-    {
-        if (!this.IsGameStarted)
-        {
-            this.StartGame();
-            return;
-        }
-
-        if (this.IsPaused)
-        {
-            this.IsPaused = false;
-            this.speed = this.GetSpeed(this.Statistics.Level);
-        }
-        else
-        {
-            this.IsPaused = true;
-            this.speed = 0;
-        }
     }
 }

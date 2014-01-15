@@ -6,13 +6,19 @@ public class InputManager : MonoBehaviour
 {
     private const float WindowWidth = 480f;
     private const float WindowHeight = 200f;
+    private const float DurationBeforeMoveInputRepetition = 0.15f;
 
     private float lastInputTime;
     private string playerInputName = "Player";
     private GameStatistics statisticToRegister;
 
-    private const float DurationBeforeMoveInputRepetition = 0.15f;
     private bool moveInputRepetitionMode = false;
+
+    public static InputManager Instance
+    {
+        get;
+        private set;
+    }
 
     public float DurationBetweenMoveInputs
     {
@@ -20,10 +26,21 @@ public class InputManager : MonoBehaviour
         set;
     }
 
-    public static InputManager Instance
+    public void OnGUI()
     {
-        get;
-        private set;
+        if (this.statisticToRegister == null)
+        {
+            return;
+        }
+
+        float left = (Screen.width / 2f) - (WindowWidth / 2f);
+        float top = (Screen.height / 2f) - (WindowHeight / 2f);
+        GUI.ModalWindow(0, new Rect(left, top, WindowWidth, WindowHeight), this.DoMyWindow, Localization.GetLocalizedString("%Congratulation"), GUIManager.Instance.LightStyle);
+    }
+
+    public void RegisterGameStatistic(GameStatistics statistics)
+    {
+        this.statisticToRegister = statistics;
     }
 
     private void Awake()
@@ -81,8 +98,8 @@ public class InputManager : MonoBehaviour
         if (!rightMove && !leftMove)
         {
             float deltaTime = Time.time - this.lastInputTime;
-            if (this.moveInputRepetitionMode && deltaTime >= this.DurationBetweenMoveInputs ||
-                !this.moveInputRepetitionMode && deltaTime >= DurationBeforeMoveInputRepetition)
+            if ((this.moveInputRepetitionMode && deltaTime >= this.DurationBetweenMoveInputs) ||
+                (!this.moveInputRepetitionMode && deltaTime >= DurationBeforeMoveInputRepetition))
             {
                 if (Input.GetKey(KeyCode.RightArrow))
                 {
@@ -111,35 +128,22 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    public void OnGUI()
-    {
-        if (this.statisticToRegister == null)
-        {
-            return;
-        }
-
-        GUI.ModalWindow(0, new Rect(Screen.width / 2f - WindowWidth / 2f, Screen.height / 2f - WindowHeight / 2f, WindowWidth, WindowHeight), DoMyWindow, Localization.GetLocalizedString("%Congratulation"), GUIManager.Instance.LightStyle);
-    }
-
     private void DoMyWindow(int windowID)
     {
-        const float labelWidth = 450;
-        const float buttonWidth = 100;
-        const float inputNameWidth = WindowWidth - 40f;
-        const float inputNameHeight = 40f;
-        GUI.Label(new Rect(20, 50, labelWidth, inputNameHeight), Localization.GetLocalizedString("%EnterYourName"), GUIManager.Instance.LightStyle);
-        this.playerInputName = GUI.TextField(new Rect(20, 100, inputNameWidth, inputNameHeight), this.playerInputName, 10, GUIManager.Instance.DarkStyle);
+        const float LabelWidth = 450;
+        const float ButtonWidth = 100;
+        const float InputNameWidth = WindowWidth - 40f;
+        const float InputNameHeight = 40f;
+        GUI.Label(new Rect(20, 50, LabelWidth, InputNameHeight), Localization.GetLocalizedString("%EnterYourName"), GUIManager.Instance.LightStyle);
+        this.playerInputName = GUI.TextField(new Rect(20, 100, InputNameWidth, InputNameHeight), this.playerInputName, 10, GUIManager.Instance.DarkStyle);
 
-        if (GUI.Button(new Rect(WindowWidth / 2f - buttonWidth / 2f, 150, buttonWidth, 40), Localization.GetLocalizedString("%Register"), GUIManager.Instance.DarkStyle))
+        float left = (WindowWidth / 2f) - (ButtonWidth / 2f);
+        float top = 150f;
+        if (GUI.Button(new Rect(left, top, ButtonWidth, 40), Localization.GetLocalizedString("%Register"), GUIManager.Instance.DarkStyle))
         {
             this.statisticToRegister.PlayerName = this.playerInputName;
             HighScores.RegisterScore(this.statisticToRegister);
             this.statisticToRegister = null;
         }
-    }
-
-    public void RegisterGameStatistic(GameStatistics statistics)
-    {
-        this.statisticToRegister = statistics;
     }
 }

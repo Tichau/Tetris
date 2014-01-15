@@ -63,7 +63,9 @@ public class GUIManager : MonoBehaviour
         }
         else if (Application.Instance.Game.IsPaused)
         {
-            GUI.ModalWindow(0, new Rect(Screen.width / 2f - WindowWidth / 2f, Screen.height / 2f - WindowHeight / 2f, WindowWidth, WindowHeight), this.PauseWindow, Localization.GetLocalizedString("%PauseTitle"), this.LightStyle);
+            float left = (Screen.width / 2f) - (WindowWidth / 2f);
+            float top = (Screen.height / 2f) - (WindowHeight / 2f);
+            GUI.ModalWindow(0, new Rect(left, top, WindowWidth, WindowHeight), this.PauseWindow, Localization.GetLocalizedString("%PauseTitle"), this.LightStyle);
         }
 
         if (Application.Instance.Game.IsGameStarted)
@@ -86,7 +88,9 @@ public class GUIManager : MonoBehaviour
     {
         const float ButtonWidth = 100;
 
-        if (GUI.Button(new Rect(WindowWidth / 2f - ButtonWidth / 2f, 50, ButtonWidth, 40), Localization.GetLocalizedString("%Continue"), this.DarkStyle))
+        float left = (WindowWidth / 2f) - (ButtonWidth / 2f);
+        float top = 50f;
+        if (GUI.Button(new Rect(left, top, ButtonWidth, 40), Localization.GetLocalizedString("%Continue"), this.DarkStyle))
         {
             Application.Instance.Input(Application.PlayerAction.Pause);
         }

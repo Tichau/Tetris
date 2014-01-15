@@ -1,4 +1,6 @@
-﻿using System;
+﻿// <copyright file="HighScores.cs" company="BlobTeam">Copyright BlobTeam. All rights reserved.</copyright>
+
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
@@ -6,15 +8,8 @@ using UnityEngine;
 public static class HighScores
 {
     public const int HighScoreCount = 10;
-    public static event EventHandler HighScoresChange;
 
     private static List<GameStatistics> highScores = new List<GameStatistics>(HighScoreCount);
-
-    public static ReadOnlyCollection<GameStatistics> HighScoresCollection
-    {
-        get;
-        private set;
-    }
 
     static HighScores()
     {
@@ -34,6 +29,14 @@ public static class HighScores
             highScores.Add(gameStatistics);
             index++;
         }
+    }
+
+    public static event EventHandler HighScoresChange;
+
+    public static ReadOnlyCollection<GameStatistics> HighScoresCollection
+    {
+        get;
+        private set;
     }
 
     public static bool CanRegisterGameStatistic(GameStatistics gameStatistics)

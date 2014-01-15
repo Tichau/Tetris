@@ -4,12 +4,6 @@ using UnityEngine;
 
 public class Application : MonoBehaviour
 {
-    public Game Game
-    {
-        get; 
-        private set;
-    }
-
     [SerializeField]
     private GameObject rendererPrefab;
 
@@ -26,6 +20,12 @@ public class Application : MonoBehaviour
     }
 
     public static Application Instance
+    {
+        get;
+        private set;
+    }
+
+    public Game Game
     {
         get;
         private set;

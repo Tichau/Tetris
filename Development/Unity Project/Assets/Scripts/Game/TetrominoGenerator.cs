@@ -45,6 +45,11 @@ public class TetrominoGenerator
         return new Tetromino(nextTetrominoType);
     }
 
+    public void Reset()
+    {
+        this.RefillPool();
+    }
+
     private Tetromino.TetrominoType PickNewTetromino()
     {
         Tetromino.TetrominoType tetrominoType = this.tetrominoPool[UnityEngine.Random.Range(0, this.tetrominoPool.Count)];
@@ -61,10 +66,5 @@ public class TetrominoGenerator
     {
         this.tetrominoPool.Clear();
         this.tetrominoPool.AddRange(this.tetrominoTypes);
-    }
-
-    public void Reset()
-    {
-        this.RefillPool();
     }
 }

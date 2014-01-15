@@ -1,19 +1,21 @@
-﻿using System.Collections.Generic;
+﻿// <copyright file="Localization.cs" company="BlobTeam">Copyright BlobTeam. All rights reserved.</copyright>
+
+using System.Collections.Generic;
 
 public static class Localization
 {
     private static Language currentLanguage;
     private static Dictionary<string, string> localizedString = new Dictionary<string, string>();
 
+    static Localization()
+    {
+        CurrentLanguage = Language.English;
+    }
+
     public enum Language
     {
         English,
         French,
-    }
-
-    static Localization()
-    {
-        CurrentLanguage = Language.English;
     }
 
     public static Language CurrentLanguage
@@ -28,6 +30,16 @@ public static class Localization
             currentLanguage = value;
             RefreshLocalization();
         }
+    }
+
+    public static string GetLocalizedString(string key)
+    {
+        if (!localizedString.ContainsKey(key))
+        {
+            return key;
+        }
+
+        return localizedString[key];
     }
 
     private static void RefreshLocalization()
@@ -62,15 +74,5 @@ public static class Localization
                 localizedString.Add("%Player", "Joueur");
                 break;
         }
-    }
-
-    public static string GetLocalizedString(string key)
-    {
-        if (!localizedString.ContainsKey(key))
-        {
-            return key;
-        }
-
-        return localizedString[key];
     }
 }

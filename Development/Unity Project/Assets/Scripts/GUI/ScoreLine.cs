@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿// <copyright file="ScoreLine.cs" company="BlobTeam">Copyright BlobTeam. All rights reserved.</copyright>
+
+using UnityEngine;
 
 public class ScoreLine : MonoBehaviour
 {

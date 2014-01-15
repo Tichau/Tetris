@@ -7,17 +7,6 @@ using UnityEngine;
 
 public class Tetromino
 {
-    public enum TetrominoType
-    {
-        I,
-        O,
-        T,
-        L,
-        J,
-        Z,
-        S
-    }
-
     public Tetromino(TetrominoType type)
     {
         this.Type = type;
@@ -89,6 +78,17 @@ public class Tetromino
                 this.SpawnLocationOffset = new Position(0, 0);
                 break;
         }
+    }
+
+    public enum TetrominoType
+    {
+        I,
+        O,
+        T,
+        L,
+        J,
+        Z,
+        S
     }
 
     public float Angle
