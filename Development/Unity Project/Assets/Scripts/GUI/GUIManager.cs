@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GUIManager : MonoBehaviour
 {
+    public GUIMode Mode;
+
     public GUIStyle LightStyle;
     public GUIStyle DarkStyle;
     public GUIStyle PlayButtonStyle;
@@ -19,6 +21,12 @@ public class GUIManager : MonoBehaviour
 
     [SerializeField]
     private GameObject piecePreviewPanel;
+
+    public enum GUIMode
+    {
+        Landscape,
+        Portrait,
+    }
 
     public static GUIManager Instance
     {
@@ -47,9 +55,11 @@ public class GUIManager : MonoBehaviour
     {
         if (!Application.Instance.Game.IsGameStarted)
         {
-            const float labelWidth = 370;
-            const float labelHeight = 50;
-            GUI.Label(new Rect(Screen.width / 2f - labelWidth / 2f, Screen.height / 2f - labelHeight / 2f, labelWidth, labelHeight), Localization.GetLocalizedString("%StartGameInfo"), this.LightStyle);
+            const float LabelWidth = 380;
+            const float LabelHeight = 50;
+            float left = (Screen.width / 2f) - (LabelWidth / 2f);
+            float top = (Screen.height / 2f) - (LabelHeight / 2f);
+            GUI.Label(new Rect(left, top, LabelWidth, LabelHeight), Localization.GetLocalizedString("%StartGameInfo"), this.LightStyle);
         }
         else if (Application.Instance.Game.IsPaused)
         {
@@ -72,11 +82,11 @@ public class GUIManager : MonoBehaviour
         }
     }
 
-    private void PauseWindow(int windowID)
+    private void PauseWindow(int windowId)
     {
-        const float buttonWidth = 100;
+        const float ButtonWidth = 100;
 
-        if (GUI.Button(new Rect(WindowWidth / 2f - buttonWidth / 2f, 50, buttonWidth, 40), "Continue", this.DarkStyle))
+        if (GUI.Button(new Rect(WindowWidth / 2f - ButtonWidth / 2f, 50, ButtonWidth, 40), Localization.GetLocalizedString("%Continue"), this.DarkStyle))
         {
             Application.Instance.Input(Application.PlayerAction.Pause);
         }
