@@ -24,6 +24,12 @@ public class BlocGridRenderer : MonoBehaviour
 
     private bool initialized;
 
+    public Rect RendererRect
+    {
+        get;
+        private set;
+    }
+
     public void OverrideBlocSpriteDescription(BlocSpriteDescription description)
     {
         for (int index = 0; index < this.spriteDescriptions.Length; index++)
@@ -62,10 +68,12 @@ public class BlocGridRenderer : MonoBehaviour
         }
 
         // Initialize blocRenderers.
-        this.blocRenderers = new BlocRenderer[this.blocGrid.Width, this.blocGrid.Height];
-        for (int y = 0; y < this.blocGrid.Height; ++y)
+        int rowCount = this.blocGrid.Height;
+        int columnCount = this.blocGrid.Width;
+        this.blocRenderers = new BlocRenderer[columnCount, rowCount];
+        for (int y = 0; y < rowCount; ++y)
         {
-            for (int x = 0; x < this.blocGrid.Width; ++x)
+            for (int x = 0; x < columnCount; ++x)
             {
                 GameObject gameObject = GameObject.Instantiate(this.blocPrefab) as GameObject;
                 gameObject.transform.position = new Vector3(offsetPosition.x + x - (x * this.tileMarginOffset), offsetPosition.y + y - (y * this.tileMarginOffset));
@@ -76,6 +84,15 @@ public class BlocGridRenderer : MonoBehaviour
                 this.blocRenderers[x, y] = blocRenderer;
             }
         }
+
+        // Compute the renderer's area.
+        float width = columnCount - ((float) this.tileMarginSize/(float) this.tileSize*(columnCount - 1));
+        float height = rowCount - ((float) this.tileMarginSize/(float) this.tileSize*(rowCount - 1));
+        this.RendererRect = new Rect(-0.5f, -0.5f,
+            width,
+            height);
+
+        Debug.Log(this.RendererRect);
 
         this.initialized = true;
     }

@@ -16,26 +16,41 @@ public class ScoreDisplayer : MonoBehaviour
             return;
         }
 
-        Vector3 diff = this.CameraGameObject.camera.WorldToScreenPoint(new Vector3(0f, 1f, 0f)) - this.CameraGameObject.camera.WorldToScreenPoint(new Vector3(0f, 0f, 0f));
-        float offset = (Screen.height - (diff.y * 22f * 62f / 64f)) / 2f;
-
-        const float ScorePanelHeight = 125f;
-        const float ScorePanelWidth = 160f;
-        const float NumbersAlignement = 100f;
-        const float Margin = 10f;
+        GUIManager guiManager = GUIManager.Instance;
         
-        float left = 0.68f * Screen.width;
-        float top = Screen.height - offset - ScorePanelHeight;
+        float scorePanelHeight = guiManager.GetLenght(125f);
+        float scorePanelWidth = guiManager.GetLenght(160f);
+        float numbersAlignement = guiManager.GetLenght(100f);
+        float margin = guiManager.GetLenght(30f);
+        float insideMargin = guiManager.GetLenght(10f);
+        float scoreTitleHeight = guiManager.GetLenght(40f);
+        float subTitleHeight = guiManager.GetLenght(30f);
+        float secondLineTop = guiManager.GetLenght(50f);
+        float thirdLineTop = guiManager.GetLenght(80f);
 
-        GUI.BeginGroup(new Rect(left, top, ScorePanelWidth, ScorePanelHeight), GUIManager.Instance.LightStyle);
-        GUI.Label(new Rect(Margin, Margin, ScorePanelWidth, 40f), Application.Instance.Game.Statistics.Score.ToString(), GUIManager.Instance.BigTextStyle);
+        Rect rendererArea = Application.Instance.BlocGridRendererArea;
+        Vector3 bottomRightPoint = new Vector3(rendererArea.x + rendererArea.width, rendererArea.y);
+        Vector3 worldToScreenPoint = this.CameraGameObject.camera.WorldToScreenPoint(bottomRightPoint);
 
-        GUI.Label(new Rect(Margin, 50f, NumbersAlignement, 30f), Localization.GetLocalizedString("%Level"), GUIManager.Instance.TextStyle);
-        GUI.Label(new Rect(Margin + NumbersAlignement, 50f, ScorePanelWidth - NumbersAlignement, 30f), (Application.Instance.Game.Statistics.Level + 1).ToString(), GUIManager.Instance.TextStyle);
+        float left = worldToScreenPoint.x + margin;
 
-        GUI.Label(new Rect(Margin, 80f, ScorePanelWidth, 30f), Localization.GetLocalizedString("%Lines"), GUIManager.Instance.TextStyle);
-        GUI.Label(new Rect(Margin + NumbersAlignement, 80f, ScorePanelWidth - NumbersAlignement, 30f), Application.Instance.Game.Statistics.Lines.ToString(), GUIManager.Instance.TextStyle);
-        
+        // Unity GUI and Unity Camera doesn't use the same referentiel. 
+        // UnityGUI: Y=0 -> Top of the screen. UnityCameraScreenPoint: Y=0 -> Bottom of the screen.
+        float top = Screen.height - worldToScreenPoint.y - scorePanelHeight;
+
+        Rect rect = new Rect(left, top, scorePanelWidth, scorePanelHeight);
+        Debug.Log(rect);
+
+        GUI.BeginGroup(new Rect(left, top, scorePanelWidth, scorePanelHeight), GUIManager.Instance.GetGuiStyle(GuiStyleCategory.Light));
+
+        GUI.Label(new Rect(insideMargin, insideMargin, scorePanelWidth, scoreTitleHeight), Application.Instance.Game.Statistics.Score.ToString(), GUIManager.Instance.GetGuiStyle(GuiStyleCategory.BigText));
+
+        GUI.Label(new Rect(insideMargin, secondLineTop, numbersAlignement, subTitleHeight), Localization.GetLocalizedString("%Level"), GUIManager.Instance.GetGuiStyle(GuiStyleCategory.Text));
+        GUI.Label(new Rect(insideMargin + numbersAlignement, secondLineTop, scorePanelWidth - numbersAlignement, subTitleHeight), (Application.Instance.Game.Statistics.Level + 1).ToString(), GUIManager.Instance.GetGuiStyle(GuiStyleCategory.Text));
+
+        GUI.Label(new Rect(insideMargin, thirdLineTop, scorePanelWidth, subTitleHeight), Localization.GetLocalizedString("%Lines"), GUIManager.Instance.GetGuiStyle(GuiStyleCategory.Text));
+        GUI.Label(new Rect(insideMargin + numbersAlignement, thirdLineTop, scorePanelWidth - numbersAlignement, subTitleHeight), Application.Instance.Game.Statistics.Lines.ToString(), GUIManager.Instance.GetGuiStyle(GuiStyleCategory.Text));
+
         GUI.EndGroup();
     }
 }

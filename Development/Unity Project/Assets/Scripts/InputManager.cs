@@ -32,10 +32,9 @@ public class InputManager : MonoBehaviour
         {
             return;
         }
-
-        float left = (Screen.width / 2f) - (WindowWidth / 2f);
-        float top = (Screen.height / 2f) - (WindowHeight / 2f);
-        GUI.ModalWindow(0, new Rect(left, top, WindowWidth, WindowHeight), this.DoMyWindow, Localization.GetLocalizedString("%Congratulation"), GUIManager.Instance.LightStyle);
+        
+        GUIManager guiManager = GUIManager.Instance;
+        GUI.ModalWindow(0, guiManager.GetRect(0f, 0f, WindowWidth, WindowHeight, RectType.Centered), this.CongratulationWindow, Localization.GetLocalizedString("%Congratulation"), guiManager.GetGuiStyle(GuiStyleCategory.Light));
     }
 
     public void RegisterGameStatistic(GameStatistics statistics)
@@ -128,18 +127,21 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    private void DoMyWindow(int windowID)
+    private void CongratulationWindow(int windowID)
     {
         const float LabelWidth = 450;
         const float ButtonWidth = 100;
         const float InputNameWidth = WindowWidth - 40f;
         const float InputNameHeight = 40f;
-        GUI.Label(new Rect(20, 50, LabelWidth, InputNameHeight), Localization.GetLocalizedString("%EnterYourName"), GUIManager.Instance.LightStyle);
-        this.playerInputName = GUI.TextField(new Rect(20, 100, InputNameWidth, InputNameHeight), this.playerInputName, 10, GUIManager.Instance.DarkStyle);
+
+        GUIManager guiManager = GUIManager.Instance;
+
+        GUI.Label(guiManager.GetRect(20f, 50f, LabelWidth, InputNameHeight), Localization.GetLocalizedString("%EnterYourName"), GUIManager.Instance.GetGuiStyle(GuiStyleCategory.Light));
+        this.playerInputName = GUI.TextField(guiManager.GetRect(20, 100, InputNameWidth, InputNameHeight), this.playerInputName, 10, GUIManager.Instance.GetGuiStyle(GuiStyleCategory.Dark));
 
         float left = (WindowWidth / 2f) - (ButtonWidth / 2f);
         float top = 150f;
-        if (GUI.Button(new Rect(left, top, ButtonWidth, 40), Localization.GetLocalizedString("%Register"), GUIManager.Instance.DarkStyle))
+        if (GUI.Button(guiManager.GetRect(left, top, ButtonWidth, 40f), Localization.GetLocalizedString("%Register"), GUIManager.Instance.GetGuiStyle(GuiStyleCategory.Dark)))
         {
             this.statisticToRegister.PlayerName = this.playerInputName;
             HighScores.RegisterScore(this.statisticToRegister);

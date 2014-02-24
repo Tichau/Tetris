@@ -12,18 +12,20 @@ public class PiecePreviewDisplayer : MonoBehaviour
     [SerializeField]
     private Sprite backgroundTexture;
 
-    private BlocGrid preview1;
+    private BlocGrid preview;
+    private BlocGridRenderer previewRenderer;
 
     public IEnumerator Start()
     {
-        this.preview1 = new BlocGrid(6, 4);
+        this.preview = new BlocGrid(6, 4);
 
         GameObject rendererObject = Instantiate(this.rendererPrefab) as GameObject;
         rendererObject.transform.parent = this.transform;
         rendererObject.transform.localPosition = Vector3.zero;
-        BlocGridRenderer blocGridRenderer = rendererObject.GetComponent<BlocGridRenderer>();
-        blocGridRenderer.OverrideBlocSpriteDescription(new BlocSpriteDescription(BlocSpriteDescription.BlocColor.Black, this.backgroundTexture));
-        blocGridRenderer.Initialize(this.preview1, new Vector2(10.5f, 17.4f));
+        this.previewRenderer = rendererObject.GetComponent<BlocGridRenderer>();
+        this.previewRenderer.OverrideBlocSpriteDescription(new BlocSpriteDescription(BlocSpriteDescription.BlocColor.Black, this.backgroundTexture));
+        //previewRenderer.Initialize(this.preview, new Vector2(10.5f, 17.4f));
+        this.previewRenderer.Initialize(this.preview, Vector2.zero);
 
         while (Application.Instance == null || Application.Instance.Game == null)
         {
@@ -33,9 +35,18 @@ public class PiecePreviewDisplayer : MonoBehaviour
         Application.Instance.Game.CurrentTetrominoChange += this.Game_CurrentTetrominoChange;
     }
 
+    public void Update()
+    {
+        float left = Application.Instance.BlocGridRendererArea.width;
+        float top = Application.Instance.BlocGridRendererArea.height - this.previewRenderer.RendererRect.height;
+        float margin = GUIManager.Instance.GetLenght(30f);
+        Vector3 worldMargin = CameraController.Instance.Camera.ScreenToWorldPoint(new Vector3(margin, 0f)) - CameraController.Instance.Camera.ScreenToWorldPoint(new Vector3(0f, 0f));
+        this.transform.position = new Vector3(left + worldMargin.x, top, 0f);
+    }
+
     private void Game_CurrentTetrominoChange(object sender, System.EventArgs e)
     {
-        this.preview1.Clear();
+        this.preview.Clear();
         Queue<Tetromino.TetrominoType> nextTetrominos = Application.Instance.Game.NextTetrominos;
         if (nextTetrominos == null)
         {
@@ -69,6 +80,6 @@ public class PiecePreviewDisplayer : MonoBehaviour
                 break;
         }
 
-        this.preview1.SetTetromino(tetromino);
+        this.preview.SetTetromino(tetromino);
     }
 }
