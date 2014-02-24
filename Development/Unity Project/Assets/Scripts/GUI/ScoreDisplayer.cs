@@ -38,9 +38,6 @@ public class ScoreDisplayer : MonoBehaviour
         // UnityGUI: Y=0 -> Top of the screen. UnityCameraScreenPoint: Y=0 -> Bottom of the screen.
         float top = Screen.height - worldToScreenPoint.y - scorePanelHeight;
 
-        Rect rect = new Rect(left, top, scorePanelWidth, scorePanelHeight);
-        Debug.Log(rect);
-
         GUI.BeginGroup(new Rect(left, top, scorePanelWidth, scorePanelHeight), GUIManager.Instance.GetGuiStyle(GuiStyleCategory.Light));
 
         GUI.Label(new Rect(insideMargin, insideMargin, scorePanelWidth, scoreTitleHeight), Application.Instance.Game.Statistics.Score.ToString(), GUIManager.Instance.GetGuiStyle(GuiStyleCategory.BigText));

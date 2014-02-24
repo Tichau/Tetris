@@ -55,7 +55,7 @@ public static class Localization
                 localizedString.Add("%Lines", "Lines");
                 localizedString.Add("%HighScores", "High Scores");
                 localizedString.Add("%Continue", "Continue");
-                localizedString.Add("%EnterYourName", "Enter you're name:");
+                localizedString.Add("%EnterYourName", "Enter your name:");
                 localizedString.Add("%Register", "Register");
                 localizedString.Add("%Congratulation", "Congratulations you're in the high scores !");
                 localizedString.Add("%Player", "Player");

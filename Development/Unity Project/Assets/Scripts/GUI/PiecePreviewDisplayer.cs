@@ -24,7 +24,6 @@ public class PiecePreviewDisplayer : MonoBehaviour
         rendererObject.transform.localPosition = Vector3.zero;
         this.previewRenderer = rendererObject.GetComponent<BlocGridRenderer>();
         this.previewRenderer.OverrideBlocSpriteDescription(new BlocSpriteDescription(BlocSpriteDescription.BlocColor.Black, this.backgroundTexture));
-        //previewRenderer.Initialize(this.preview, new Vector2(10.5f, 17.4f));
         this.previewRenderer.Initialize(this.preview, Vector2.zero);
 
         while (Application.Instance == null || Application.Instance.Game == null)

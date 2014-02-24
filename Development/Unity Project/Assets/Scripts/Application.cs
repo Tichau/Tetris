@@ -19,15 +19,18 @@ public class Application : MonoBehaviour
         RotateRight,
     }
 
-    public Rect BlocGridRendererArea
-    {
-        get { return this.blocGridRenderer.RendererRect; }
-    }
-
     public static Application Instance
     {
         get;
         private set;
+    }
+
+    public Rect BlocGridRendererArea
+    {
+        get
+        {
+            return this.blocGridRenderer.RendererRect;
+        }
     }
 
     public Game Game

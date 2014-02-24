@@ -60,8 +60,5 @@ public class CameraController : MonoBehaviour
         float margin = GUIManager.Instance.GetLenght(30f);
         Vector3 worldMargin = this.Camera.ScreenToWorldPoint(new Vector3(margin, 0f)) - this.Camera.ScreenToWorldPoint(new Vector3(0f, 0f));
         Debug.DrawLine(new Vector3(left + width + worldMargin.x, bottom), new Vector3(left + width + worldMargin.x, bottom + height), Color.blue);
-
-        Debug.Log("Input=" + Input.mousePosition);
-        Debug.Log("World Input=" + this.Camera.ScreenToWorldPoint(Input.mousePosition));
     }
 }

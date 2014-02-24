@@ -14,7 +14,7 @@ public class HighScoresDisplayer : MonoBehaviour
         float firstOffset = guiManager.GetLenght(50f);
         float offset = guiManager.GetLenght(25f);
         float left = guiManager.GetLenght(20f);
-        float top = guiManager.GetLenght(200f); //0.3f * Screen.height;
+        float top = guiManager.GetLenght(200f);
 
         float rankIndexWidth = guiManager.GetLenght(30f);
         float playerNameWidth = guiManager.GetLenght(180f);

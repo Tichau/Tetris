@@ -86,13 +86,9 @@ public class BlocGridRenderer : MonoBehaviour
         }
 
         // Compute the renderer's area.
-        float width = columnCount - ((float) this.tileMarginSize/(float) this.tileSize*(columnCount - 1));
-        float height = rowCount - ((float) this.tileMarginSize/(float) this.tileSize*(rowCount - 1));
-        this.RendererRect = new Rect(-0.5f, -0.5f,
-            width,
-            height);
-
-        Debug.Log(this.RendererRect);
+        float width = columnCount - ((float)this.tileMarginSize / (float)this.tileSize * (columnCount - 1));
+        float height = rowCount - ((float)this.tileMarginSize / (float)this.tileSize * (rowCount - 1));
+        this.RendererRect = new Rect(-0.5f, -0.5f, width, height);
 
         this.initialized = true;
     }

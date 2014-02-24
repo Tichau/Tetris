@@ -29,26 +29,26 @@ public class GUIManager : MonoBehaviour
 
     public GUIMode Mode;
 
-    private Dictionary<GuiStyleCategory, GUIStyle> GuiStylesByCategory = new Dictionary<GuiStyleCategory, GUIStyle>();
+    private Dictionary<GuiStyleCategory, GUIStyle> guiStylesByCategory = new Dictionary<GuiStyleCategory, GUIStyle>();
 
     [SerializeField]
-    public GUIStyle LightStyle;
+    private GUIStyle lightStyle;
     [SerializeField]
-    private GUIStyle DarkStyle;
+    private GUIStyle darkStyle;
 
     [SerializeField]
-    private GUIStyle PlayButtonStyle;
+    private GUIStyle playButtonStyle;
     [SerializeField]
-    private GUIStyle PauseButtonStyle;
+    private GUIStyle pauseButtonStyle;
 
     [SerializeField]
-    private GUIStyle BigTextStyle;
+    private GUIStyle bigTextStyle;
     [SerializeField]
-    private GUIStyle TextStyle;
+    private GUIStyle textStyle;
     [SerializeField]
-    private GUIStyle SmallTextStyle;
+    private GUIStyle smallTextStyle;
     [SerializeField]
-    private GUIStyle RightAlignSmallTextStyle;
+    private GUIStyle rightAlignSmallTextStyle;
 
     [SerializeField]
     private GameObject piecePreviewPanel;
@@ -101,7 +101,7 @@ public class GUIManager : MonoBehaviour
 
     public GUIStyle GetGuiStyle(GuiStyleCategory category)
     {
-        return this.GuiStylesByCategory[category];
+        return this.guiStylesByCategory[category];
     }
 
     private float GetGuiRatio()
@@ -119,29 +119,28 @@ public class GUIManager : MonoBehaviour
 
     private void Start()
     {
-        this.GuiStylesByCategory.Add(GuiStyleCategory.PlayButton, new GUIStyle(this.PlayButtonStyle));
-        this.GuiStylesByCategory.Add(GuiStyleCategory.PauseButton, new GUIStyle(this.PauseButtonStyle));
+        this.guiStylesByCategory.Add(GuiStyleCategory.PlayButton, new GUIStyle(this.playButtonStyle));
+        this.guiStylesByCategory.Add(GuiStyleCategory.PauseButton, new GUIStyle(this.pauseButtonStyle));
 
-        this.GuiStylesByCategory.Add(GuiStyleCategory.Light, new GUIStyle(this.LightStyle));
-        this.GuiStylesByCategory.Add(GuiStyleCategory.Dark, new GUIStyle(this.DarkStyle));
-
+        this.guiStylesByCategory.Add(GuiStyleCategory.Light, new GUIStyle(this.lightStyle));
+        this.guiStylesByCategory.Add(GuiStyleCategory.Dark, new GUIStyle(this.darkStyle));
         
-        this.GuiStylesByCategory.Add(GuiStyleCategory.BigText, new GUIStyle(this.BigTextStyle));
-        this.GuiStylesByCategory.Add(GuiStyleCategory.Text, new GUIStyle(this.TextStyle));
-        this.GuiStylesByCategory.Add(GuiStyleCategory.SmallText, new GUIStyle(this.SmallTextStyle));
-        this.GuiStylesByCategory.Add(GuiStyleCategory.RightAlignSmallText, new GUIStyle(this.RightAlignSmallTextStyle));
+        this.guiStylesByCategory.Add(GuiStyleCategory.BigText, new GUIStyle(this.bigTextStyle));
+        this.guiStylesByCategory.Add(GuiStyleCategory.Text, new GUIStyle(this.textStyle));
+        this.guiStylesByCategory.Add(GuiStyleCategory.SmallText, new GUIStyle(this.smallTextStyle));
+        this.guiStylesByCategory.Add(GuiStyleCategory.RightAlignSmallText, new GUIStyle(this.rightAlignSmallTextStyle));
     }
 
     private void Update()
     {
         float guiRatio = this.GetGuiRatio();
-        this.GuiStylesByCategory[GuiStyleCategory.Light].fontSize = Mathf.FloorToInt(this.LightStyle.fontSize * guiRatio);
-        this.GuiStylesByCategory[GuiStyleCategory.Dark].fontSize = Mathf.FloorToInt(this.DarkStyle.fontSize * guiRatio);
+        this.guiStylesByCategory[GuiStyleCategory.Light].fontSize = Mathf.FloorToInt(this.lightStyle.fontSize * guiRatio);
+        this.guiStylesByCategory[GuiStyleCategory.Dark].fontSize = Mathf.FloorToInt(this.darkStyle.fontSize * guiRatio);
 
-        this.GuiStylesByCategory[GuiStyleCategory.BigText].fontSize = Mathf.FloorToInt(this.BigTextStyle.fontSize * guiRatio);
-        this.GuiStylesByCategory[GuiStyleCategory.Text].fontSize = Mathf.FloorToInt(this.TextStyle.fontSize * guiRatio);
-        this.GuiStylesByCategory[GuiStyleCategory.SmallText].fontSize = Mathf.FloorToInt(this.SmallTextStyle.fontSize * guiRatio);
-        this.GuiStylesByCategory[GuiStyleCategory.RightAlignSmallText].fontSize = Mathf.FloorToInt(this.RightAlignSmallTextStyle.fontSize * guiRatio);
+        this.guiStylesByCategory[GuiStyleCategory.BigText].fontSize = Mathf.FloorToInt(this.bigTextStyle.fontSize * guiRatio);
+        this.guiStylesByCategory[GuiStyleCategory.Text].fontSize = Mathf.FloorToInt(this.textStyle.fontSize * guiRatio);
+        this.guiStylesByCategory[GuiStyleCategory.SmallText].fontSize = Mathf.FloorToInt(this.smallTextStyle.fontSize * guiRatio);
+        this.guiStylesByCategory[GuiStyleCategory.RightAlignSmallText].fontSize = Mathf.FloorToInt(this.rightAlignSmallTextStyle.fontSize * guiRatio);
 
         if (Application.Instance.Game.IsGameStarted)
         {
@@ -185,7 +184,7 @@ public class GUIManager : MonoBehaviour
         const float ButtonWidth = 100f;
         const float ButtonHeight = 40f;
 
-        float left = (windowWidth / 2f) - (ButtonWidth / 2f);
+        float left = (this.windowWidth / 2f) - (ButtonWidth / 2f);
         float top = 50f;
         if (GUI.Button(this.GetRect(left, top, ButtonWidth, ButtonHeight), Localization.GetLocalizedString("%Continue"), this.GetGuiStyle(GuiStyleCategory.Dark)))
         {
