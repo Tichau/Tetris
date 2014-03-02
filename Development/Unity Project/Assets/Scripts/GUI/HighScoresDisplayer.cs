@@ -20,24 +20,24 @@ public class HighScoresDisplayer : MonoBehaviour
         float playerNameWidth = guiManager.GetLenght(180f);
         float scoreWidth = guiManager.GetLenght(70f);
 
-        if (guiManager.Mode == GUIManager.GUIMode.Portrait)
+        if (guiManager.Mode == GUIMode.Portrait)
         {
-            float margin = guiManager.GetLenght(30f);
+            float margin = guiManager.GetLenght(GUIManager.Margin);
 
             Rect rendererArea = Application.Instance.BlocGridRendererArea;
             Vector3 worldToScreenPoint = CameraController.Instance.Camera.WorldToScreenPoint(new Vector3(rendererArea.x + rendererArea.width, rendererArea.y + rendererArea.height, 0f));
             left = margin + worldToScreenPoint.x;
         }
 
-        GUI.Label(new Rect(left, top, rankIndexWidth + playerNameWidth + scoreWidth, highScoreTitleHeight), Localization.GetLocalizedString("%HighScores"), guiManager.GetGuiStyle(GuiStyleCategory.BigText));
+        GUI.Label(new Rect(left, top, rankIndexWidth + playerNameWidth + scoreWidth, highScoreTitleHeight), Localization.GetLocalizedString("%HighScores"), guiManager.GetGuiStyle(GUIStyleCategory.BigText));
 
         for (int index = 0; index < HighScores.HighScoresCollection.Count; index++)
         {
             GameStatistics gameStatistics = HighScores.HighScoresCollection[index];
             float scoreLineTop = top + firstOffset + (index * offset);
-            GUI.Label(new Rect(left, scoreLineTop, rankIndexWidth, highScoreLineHeight), (index + 1).ToString(), guiManager.GetGuiStyle(GuiStyleCategory.SmallText));
-            GUI.Label(new Rect(left + rankIndexWidth, scoreLineTop, playerNameWidth, highScoreLineHeight), gameStatistics.PlayerName, guiManager.GetGuiStyle(GuiStyleCategory.SmallText));
-            GUI.Label(new Rect(left + playerNameWidth, scoreLineTop, scoreWidth, highScoreLineHeight), gameStatistics.Score.ToString(), guiManager.GetGuiStyle(GuiStyleCategory.RightAlignSmallText));
+            GUI.Label(new Rect(left, scoreLineTop, rankIndexWidth, highScoreLineHeight), (index + 1).ToString(), guiManager.GetGuiStyle(GUIStyleCategory.SmallText));
+            GUI.Label(new Rect(left + rankIndexWidth, scoreLineTop, playerNameWidth, highScoreLineHeight), gameStatistics.PlayerName, guiManager.GetGuiStyle(GUIStyleCategory.SmallText));
+            GUI.Label(new Rect(left + playerNameWidth, scoreLineTop, scoreWidth, highScoreLineHeight), gameStatistics.Score.ToString(), guiManager.GetGuiStyle(GUIStyleCategory.RightAlignSmallText));
         }
     }
 }

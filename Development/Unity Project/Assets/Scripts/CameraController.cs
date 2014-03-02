@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+
     private const float TileSize = 64f;
     private const float TileMarginSize = 2f;
     private const int ColumnCount = 10;
@@ -18,6 +19,28 @@ public class CameraController : MonoBehaviour
     public Camera Camera
     {
         get { return this.camera; }
+    }
+
+    public Vector2 ScreenSizeInWorldUnit
+    {
+        get;
+        private set;
+    }
+
+    public Vector2 MarginInWorldUnit
+    {
+        get;
+        private set;
+    }
+
+    public Vector2 WorldToGUIPosition(Vector3 position)
+    {
+        Vector3 screenPoint = this.Camera.WorldToScreenPoint(position);
+
+        //// Unity GUI and Unity Camera doesn't use the same referentiel. 
+        //// UnityGUI: Y=0 -> Top of the screen. UnityCameraScreenPoint: Y=0 -> Bottom of the screen.
+
+        return new Vector2(screenPoint.x, Screen.height - screenPoint.y);
     }
 
     private void Awake()
@@ -39,17 +62,28 @@ public class CameraController : MonoBehaviour
         if (this.camera.aspect > 1.3f)
         {
             // Large mode.
-            this.transform.position = new Vector3(left + (width / 2f), 10, -10);
+            this.transform.position = new Vector3(left + (width / 2f), 10f, -10f);
 
-            GUIManager.Instance.Mode = GUIManager.GUIMode.Landscape;
+            GUIManager.Instance.Mode = GUIMode.Landscape;
         }
         else
         {
             // Short mode
             Vector3 screenSizeInWorldUnit = this.camera.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height)) - this.camera.ScreenToWorldPoint(new Vector3(0, 0));
-            this.transform.position = new Vector3((screenSizeInWorldUnit.x / 2f) - 1.5f, 10, -10);
+            this.ScreenSizeInWorldUnit = new Vector2(screenSizeInWorldUnit.x, screenSizeInWorldUnit.y);
 
-            GUIManager.Instance.Mode = GUIManager.GUIMode.Portrait;
+            if (GUIManager.Instance.VirtualCommandsEnabled)
+            {
+                this.Camera.orthographicSize = 14f;
+                this.transform.position = new Vector3((screenSizeInWorldUnit.x / 2f) - 1.5f, 9f, -10f);
+            }
+            else
+            {
+                this.Camera.orthographicSize = 12f;
+                this.transform.position = new Vector3((screenSizeInWorldUnit.x / 2f) - 1.5f, 10f, -10f);
+            }
+
+            GUIManager.Instance.Mode = GUIMode.Portrait;
         }
 
         Debug.DrawLine(new Vector3(left, bottom), new Vector3(left + width, bottom), Color.red);
@@ -57,8 +91,9 @@ public class CameraController : MonoBehaviour
         Debug.DrawLine(new Vector3(left + width, bottom + height), new Vector3(left, bottom + height), Color.cyan);
         Debug.DrawLine(new Vector3(left, bottom), new Vector3(left, bottom + height), Color.magenta);
 
-        float margin = GUIManager.Instance.GetLenght(30f);
-        Vector3 worldMargin = this.Camera.ScreenToWorldPoint(new Vector3(margin, 0f)) - this.Camera.ScreenToWorldPoint(new Vector3(0f, 0f));
-        Debug.DrawLine(new Vector3(left + width + worldMargin.x, bottom), new Vector3(left + width + worldMargin.x, bottom + height), Color.blue);
+        float margin = GUIManager.Instance.GetLenght(GUIManager.Margin);
+        this.MarginInWorldUnit = this.Camera.ScreenToWorldPoint(new Vector3(margin, margin)) - this.Camera.ScreenToWorldPoint(new Vector3(0f, 0f));
+        Debug.DrawLine(new Vector3(left + width + this.MarginInWorldUnit.x, bottom), new Vector3(left + width + this.MarginInWorldUnit.x, bottom + height), Color.green);
+        Debug.DrawLine(new Vector3(left, bottom - this.MarginInWorldUnit.y), new Vector3(left + width, bottom - this.MarginInWorldUnit.y), Color.green);
     }
 }

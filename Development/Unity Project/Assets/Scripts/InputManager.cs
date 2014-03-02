@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
+    public IInputProvider LeftInputOverride;
+    public IInputProvider DownInputOverride;
+    public IInputProvider RotateInputOverride;
+    public IInputProvider RightInputOverride;
+
     private const float WindowWidth = 480f;
     private const float WindowHeight = 200f;
     private const float DurationBeforeMoveInputRepetition = 0.15f;
@@ -34,7 +39,7 @@ public class InputManager : MonoBehaviour
         }
         
         GUIManager guiManager = GUIManager.Instance;
-        GUI.ModalWindow(0, guiManager.GetRect(0f, 0f, WindowWidth, WindowHeight, RectType.Centered), this.CongratulationWindow, Localization.GetLocalizedString("%Congratulation"), guiManager.GetGuiStyle(GuiStyleCategory.Light));
+        GUI.ModalWindow(0, guiManager.GetRect(0f, 0f, WindowWidth, WindowHeight, RectType.Centered), this.CongratulationWindow, Localization.GetLocalizedString("%Congratulation"), guiManager.GetGuiStyle(GUIStyleCategory.Light));
     }
 
     public void RegisterGameStatistic(GameStatistics statistics)
@@ -59,11 +64,11 @@ public class InputManager : MonoBehaviour
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.DownArrow))
+        if (Input.GetKeyDown(KeyCode.DownArrow) || this.DownInputOverride.IsDown)
         {
             Application.Instance.Input(Application.PlayerAction.SpeedUpStart);
         }
-        else if (Input.GetKeyUp(KeyCode.DownArrow))
+        else if (Input.GetKeyUp(KeyCode.DownArrow) || this.DownInputOverride.IsUp)
         {
             Application.Instance.Input(Application.PlayerAction.SpeedUpEnd);
         }
@@ -74,21 +79,21 @@ public class InputManager : MonoBehaviour
         }
 
         // Rotation
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        if (Input.GetKeyDown(KeyCode.UpArrow) || this.RotateInputOverride.IsDown)
         {
             Application.Instance.Input(Application.PlayerAction.RotateRight);
         }
 
         // Left & Right moves.
-        bool rightMove = Input.GetKeyDown(KeyCode.RightArrow);
-        bool leftMove = Input.GetKeyDown(KeyCode.LeftArrow);
+        bool rightMove = Input.GetKeyDown(KeyCode.RightArrow) || this.RightInputOverride.IsDown;
+        bool leftMove = Input.GetKeyDown(KeyCode.LeftArrow) || this.LeftInputOverride.IsDown;
 
-        if (Input.GetKeyUp(KeyCode.RightArrow))
+        if (Input.GetKeyUp(KeyCode.RightArrow) || this.RightInputOverride.IsUp)
         {
             this.moveInputRepetitionMode = false;   
         }
 
-        if (Input.GetKeyUp(KeyCode.LeftArrow))
+        if (Input.GetKeyUp(KeyCode.LeftArrow) || this.LeftInputOverride.IsUp)
         {
             this.moveInputRepetitionMode = false;
         }
@@ -100,13 +105,13 @@ public class InputManager : MonoBehaviour
             if ((this.moveInputRepetitionMode && deltaTime >= this.DurationBetweenMoveInputs) ||
                 (!this.moveInputRepetitionMode && deltaTime >= DurationBeforeMoveInputRepetition))
             {
-                if (Input.GetKey(KeyCode.RightArrow))
+                if (Input.GetKey(KeyCode.RightArrow) || this.RightInputOverride.IsActive)
                 {
                     this.moveInputRepetitionMode = true;
                     rightMove = true;
                 }
 
-                if (Input.GetKey(KeyCode.LeftArrow))
+                if (Input.GetKey(KeyCode.LeftArrow) || this.LeftInputOverride.IsActive)
                 {
                     this.moveInputRepetitionMode = true;
                     leftMove = true;
@@ -136,12 +141,12 @@ public class InputManager : MonoBehaviour
 
         GUIManager guiManager = GUIManager.Instance;
 
-        GUI.Label(guiManager.GetRect(20f, 50f, LabelWidth, InputNameHeight), Localization.GetLocalizedString("%EnterYourName"), GUIManager.Instance.GetGuiStyle(GuiStyleCategory.Light));
-        this.playerInputName = GUI.TextField(guiManager.GetRect(20, 100, InputNameWidth, InputNameHeight), this.playerInputName, 10, GUIManager.Instance.GetGuiStyle(GuiStyleCategory.Dark));
+        GUI.Label(guiManager.GetRect(20f, 50f, LabelWidth, InputNameHeight), Localization.GetLocalizedString("%EnterYourName"), GUIManager.Instance.GetGuiStyle(GUIStyleCategory.Light));
+        this.playerInputName = GUI.TextField(guiManager.GetRect(20, 100, InputNameWidth, InputNameHeight), this.playerInputName, 10, GUIManager.Instance.GetGuiStyle(GUIStyleCategory.Dark));
 
         float left = (WindowWidth / 2f) - (ButtonWidth / 2f);
         float top = 150f;
-        if (GUI.Button(guiManager.GetRect(left, top, ButtonWidth, 40f), Localization.GetLocalizedString("%Register"), GUIManager.Instance.GetGuiStyle(GuiStyleCategory.Dark)))
+        if (GUI.Button(guiManager.GetRect(left, top, ButtonWidth, 40f), Localization.GetLocalizedString("%Register"), GUIManager.Instance.GetGuiStyle(GUIStyleCategory.Dark)))
         {
             this.statisticToRegister.PlayerName = this.playerInputName;
             HighScores.RegisterScore(this.statisticToRegister);

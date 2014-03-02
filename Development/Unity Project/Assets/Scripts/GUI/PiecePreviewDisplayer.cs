@@ -38,7 +38,7 @@ public class PiecePreviewDisplayer : MonoBehaviour
     {
         float left = Application.Instance.BlocGridRendererArea.width;
         float top = Application.Instance.BlocGridRendererArea.height - this.previewRenderer.RendererRect.height;
-        float margin = GUIManager.Instance.GetLenght(30f);
+        float margin = GUIManager.Instance.GetLenght(GUIManager.Margin);
         Vector3 worldMargin = CameraController.Instance.Camera.ScreenToWorldPoint(new Vector3(margin, 0f)) - CameraController.Instance.Camera.ScreenToWorldPoint(new Vector3(0f, 0f));
         this.transform.position = new Vector3(left + worldMargin.x, top, 0f);
     }
