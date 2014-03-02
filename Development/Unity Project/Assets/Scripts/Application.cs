@@ -71,8 +71,11 @@ public class Application : MonoBehaviour
 
     private void Start()
     {
-        Instance = this;
+#if UNITY_ANDROID
+        Screen.fullScreen = true;
+#endif
 
+        Instance = this;
         this.Game = new Game(10, 22);
 
         // View.

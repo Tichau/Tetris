@@ -12,7 +12,7 @@ public class GUIManager : MonoBehaviour
 
     public GUIMode Mode;
 
-    public bool VirtualCommandsEnabled;
+    private bool virtualCommandsEnabled;
 
     [SerializeField]
     private float startButtonSize;
@@ -53,6 +53,20 @@ public class GUIManager : MonoBehaviour
     {
         get;
         private set;
+    }
+
+    public bool VirtualCommandsEnabled
+    {
+        get
+        {
+            return this.virtualCommandsEnabled;
+        }
+
+        private set
+        {
+            this.virtualCommandsEnabled = value;
+            this.virtualCommandsController.gameObject.SetActive(value);
+        }
     }
 
     public float GetLenght(float lenght)
@@ -106,6 +120,12 @@ public class GUIManager : MonoBehaviour
 
     private void Start()
     {
+#if UNITY_ANDROID
+        this.VirtualCommandsEnabled = true;
+#else
+        this.VirtualCommandsEnabled = false;
+#endif
+
         this.guiStylesByCategory.Add(GUIStyleCategory.PlayButton, new GUIStyle(this.playButtonStyle));
         this.guiStylesByCategory.Add(GUIStyleCategory.PauseButton, new GUIStyle(this.pauseButtonStyle));
 

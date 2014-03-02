@@ -74,5 +74,10 @@ public static class Localization
                 localizedString.Add("%Player", "Joueur");
                 break;
         }
+
+        // Plateform specific localization.
+#if UNITY_ANDROID
+        localizedString["%StartGameInfo"] = "Touch here to start a new game";
+#endif
     }
 }
