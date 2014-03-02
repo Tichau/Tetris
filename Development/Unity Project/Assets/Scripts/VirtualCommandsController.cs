@@ -1,12 +1,17 @@
 ﻿// <copyright file="VirtualCommandsController.cs" company="BlobTeam">Copyright BlobTeam. All rights reserved.</copyright>
 
+using System;
+
 using UnityEngine;
 
 public class VirtualCommandsController : MonoBehaviour
 {
     [SerializeField]
     private float marginRatio;
-
+    
+    [SerializeField]
+    private float buttonSizeInCm;
+    
     [SerializeField]
     private GameObject spriteButtonPrefab;
 
@@ -79,22 +84,37 @@ public class VirtualCommandsController : MonoBehaviour
         Rect rendererArea = Application.Instance.BlocGridRendererArea;
         CameraController cameraController = CameraController.Instance;
 
+        float dpi = Screen.dpi;
+
         Vector3 originPoint = cameraController.Camera.ScreenToWorldPoint(new Vector3(0, 0));
         Vector3 borderSizeInWorldUnit = new Vector3(rendererArea.x, rendererArea.y) - originPoint;
 
-        const int ButtonCount = 4;
-        float buttonWidth = (cameraController.ScreenSizeInWorldUnit.x - (2 * borderSizeInWorldUnit.x)) / (ButtonCount + ((ButtonCount - 1) * this.marginRatio));
-        float marginWidth = buttonWidth * this.marginRatio;
+        float externalMargin = borderSizeInWorldUnit.x;
+        float internalMargin = this.marginRatio * borderSizeInWorldUnit.x;
+
+        // Compute the size of the space between 2 groups of buttons.
+        float buttonSizeInInch = this.buttonSizeInCm / 2.54f; // 1 inch is equal to 2.54 cm.
+        float buttonWidth = (cameraController.Camera.ScreenToWorldPoint(new Vector3(dpi * buttonSizeInInch, 0f, 0f)) - cameraController.Camera.ScreenToWorldPoint(new Vector3(0f, 0f, 0f))).x;
+        float screenWidth = cameraController.ScreenSizeInWorldUnit.x;
+        float spaceWidth = screenWidth - (2 * externalMargin) - (2 * internalMargin) - (4 * buttonWidth);
+
+        if (spaceWidth < internalMargin || Math.Abs(dpi - 0f) < float.Epsilon)
+        {
+            buttonWidth = (screenWidth - (2 * externalMargin) - (3 * internalMargin)) / 4;
+            spaceWidth = internalMargin;
+        }
 
         this.leftButton.transform.localScale = new Vector3(buttonWidth, buttonWidth, 1f);
         this.downButton.transform.localScale = new Vector3(buttonWidth, buttonWidth, 1f);
         this.rotateButton.transform.localScale = new Vector3(buttonWidth, buttonWidth, 1f);
         this.rightButton.transform.localScale = new Vector3(buttonWidth, buttonWidth, 1f);
 
-        float left = originPoint.x + borderSizeInWorldUnit.x;
-        this.leftButton.transform.position = new Vector3(left + (0 * (marginWidth + buttonWidth)), rendererArea.y - cameraController.MarginInWorldUnit.y, -2f);
-        this.downButton.transform.position = new Vector3(left + (1 * (marginWidth + buttonWidth)), rendererArea.y - cameraController.MarginInWorldUnit.y, -2f);
-        this.rotateButton.transform.position = new Vector3(left + (2 * (marginWidth + buttonWidth)), rendererArea.y - cameraController.MarginInWorldUnit.y, -2f);
-        this.rightButton.transform.position = new Vector3(left + (3 * (marginWidth + buttonWidth)), rendererArea.y - cameraController.MarginInWorldUnit.y, -2f);
+        float left = originPoint.x + externalMargin;
+        this.leftButton.transform.position = new Vector3(left, rendererArea.y - cameraController.MarginInWorldUnit.y, -2f);
+        this.downButton.transform.position = new Vector3(left + internalMargin + buttonWidth, rendererArea.y - cameraController.MarginInWorldUnit.y, -2f);
+        
+        float secondGroupLeft = left + internalMargin + 2 * buttonWidth + spaceWidth;
+        this.rotateButton.transform.position = new Vector3(secondGroupLeft, rendererArea.y - cameraController.MarginInWorldUnit.y, -2f);
+        this.rightButton.transform.position = new Vector3(secondGroupLeft + internalMargin + buttonWidth, rendererArea.y - cameraController.MarginInWorldUnit.y, -2f);
     }
 }
