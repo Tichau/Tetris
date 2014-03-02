@@ -113,7 +113,7 @@ public class VirtualCommandsController : MonoBehaviour
         this.leftButton.transform.position = new Vector3(left, rendererArea.y - cameraController.MarginInWorldUnit.y, -2f);
         this.downButton.transform.position = new Vector3(left + internalMargin + buttonWidth, rendererArea.y - cameraController.MarginInWorldUnit.y, -2f);
         
-        float secondGroupLeft = left + internalMargin + 2 * buttonWidth + spaceWidth;
+        float secondGroupLeft = left + internalMargin + (2 * buttonWidth) + spaceWidth;
         this.rotateButton.transform.position = new Vector3(secondGroupLeft, rendererArea.y - cameraController.MarginInWorldUnit.y, -2f);
         this.rightButton.transform.position = new Vector3(secondGroupLeft + internalMargin + buttonWidth, rendererArea.y - cameraController.MarginInWorldUnit.y, -2f);
     }

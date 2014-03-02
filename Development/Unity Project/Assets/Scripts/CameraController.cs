@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-
     private const float TileSize = 64f;
     private const float TileMarginSize = 2f;
     private const int ColumnCount = 10;
