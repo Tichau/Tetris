@@ -32,6 +32,12 @@ public class CameraController : MonoBehaviour
         private set;
     }
 
+    public Vector3 OffsetPosition
+    {
+        get;
+        set;
+    }
+
     public Vector2 WorldToGUIPosition(Vector3 position)
     {
         Vector3 screenPoint = this.Camera.WorldToScreenPoint(position);
@@ -85,6 +91,10 @@ public class CameraController : MonoBehaviour
             GUIManager.Instance.Mode = GUIMode.Portrait;
         }
 
+        // Camera position.
+        this.transform.position = this.transform.position + this.OffsetPosition;
+
+        // Debug
         Debug.DrawLine(new Vector3(left, bottom), new Vector3(left + width, bottom), Color.red);
         Debug.DrawLine(new Vector3(left + width, bottom), new Vector3(left + width, bottom + height), Color.blue);
         Debug.DrawLine(new Vector3(left + width, bottom + height), new Vector3(left, bottom + height), Color.cyan);
