@@ -6,6 +6,7 @@ public enum GUIStyleCategory
     Dark,
     PlayButton,
     PauseButton,
+    SettingsButton,
     BigText,
     Text,
     SmallText,

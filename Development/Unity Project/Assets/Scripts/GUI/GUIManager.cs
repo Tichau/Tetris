@@ -15,7 +15,7 @@ public class GUIManager : MonoBehaviour
     private bool virtualCommandsEnabled;
 
     [SerializeField]
-    private float startButtonSize;
+    private float menuButtonSize;
 
     [SerializeField]
     private VirtualCommandsController virtualCommandsController;
@@ -31,6 +31,8 @@ public class GUIManager : MonoBehaviour
     private GUIStyle playButtonStyle;
     [SerializeField]
     private GUIStyle pauseButtonStyle;
+    [SerializeField]
+    private GUIStyle settingsButtonStyle;
     [SerializeField]
     private GUIStyle controlButtonStyle;
 
@@ -128,6 +130,7 @@ public class GUIManager : MonoBehaviour
 
         this.guiStylesByCategory.Add(GUIStyleCategory.PlayButton, new GUIStyle(this.playButtonStyle));
         this.guiStylesByCategory.Add(GUIStyleCategory.PauseButton, new GUIStyle(this.pauseButtonStyle));
+        this.guiStylesByCategory.Add(GUIStyleCategory.SettingsButton, new GUIStyle(this.settingsButtonStyle));
 
         this.guiStylesByCategory.Add(GUIStyleCategory.Light, new GUIStyle(this.lightStyle));
         this.guiStylesByCategory.Add(GUIStyleCategory.Dark, new GUIStyle(this.darkStyle));
@@ -161,27 +164,50 @@ public class GUIManager : MonoBehaviour
 
     private void OnGUI()
     {
-        if (!Application.Instance.Game.IsGameStarted)
-        {
-            GUI.Label(this.GetRect(0f, 0f, 380f, 50f, RectType.Centered), Localization.GetLocalizedString("%StartGameInfo"), this.GetGuiStyle(GUIStyleCategory.Light));
-        }
-        else if (Application.Instance.Game.IsPaused)
-        {
-            GUI.ModalWindow(0, this.GetRect(0f, 0f, this.windowWidth, this.windowHeight, RectType.Centered), this.PauseWindow, Localization.GetLocalizedString("%PauseTitle"), this.GetGuiStyle(GUIStyleCategory.Light));
-        }
+        Game game = Application.Instance.Game;
+        ////if (!game.IsGameStarted)
+        ////{
+        ////    GUI.Label(this.GetRect(0f, 0f, 380f, 50f, RectType.Centered), Localization.GetLocalizedString("%StartGameInfo"), this.GetGuiStyle(GUIStyleCategory.Light));
+        ////}
+        ////else if (game.IsPaused)
+        ////{
+        ////    GUI.ModalWindow(0, this.GetRect(0f, 0f, this.windowWidth, this.windowHeight, RectType.Centered), this.PauseWindow, Localization.GetLocalizedString("%PauseTitle"), this.GetGuiStyle(GUIStyleCategory.Light));
+        ////}
 
-        if (Application.Instance.Game.IsGameStarted)
+        if (game.IsGameStarted && !game.IsPaused)
         {
-            if (GUI.Button(this.GetRect(5f, 5f, this.startButtonSize, this.startButtonSize), string.Empty, this.GetGuiStyle(GUIStyleCategory.PauseButton)))
+            if (GUI.Button(this.GetRect(5f, 5f, this.menuButtonSize, this.menuButtonSize), string.Empty, this.GetGuiStyle(GUIStyleCategory.PauseButton)))
             {
                 Application.Instance.Input(Application.PlayerAction.Pause);
             }
         }
         else
         {
-            if (GUI.Button(this.GetRect(5f, 5f, this.startButtonSize, this.startButtonSize), string.Empty, this.GetGuiStyle(GUIStyleCategory.PlayButton)))
+            if (GUI.Button(this.GetRect(5f, 5f, this.menuButtonSize, this.menuButtonSize), string.Empty, this.GetGuiStyle(GUIStyleCategory.PlayButton)))
+            {
+                Application.Instance.PostScreenChange(Application.ApplicationScreen.Game);
+                Application.Instance.Input(Application.PlayerAction.Pause);
+            }
+        }
+
+        float margin = this.GetLenght(5f);
+        float startButtonSize = this.GetLenght(this.menuButtonSize);
+        if (GUI.Button(new Rect(Screen.width - startButtonSize - margin, margin, startButtonSize, startButtonSize), string.Empty, this.GetGuiStyle(GUIStyleCategory.SettingsButton)))
+        {
+            if (game.IsGameStarted && !game.IsPaused)
             {
                 Application.Instance.Input(Application.PlayerAction.Pause);
+            }
+
+            switch (Application.Instance.CurrentScreen)
+            {
+                case Application.ApplicationScreen.Game:
+                    Application.Instance.PostScreenChange(Application.ApplicationScreen.Settings);
+                    break;
+
+                case Application.ApplicationScreen.Settings:
+                    Application.Instance.PostScreenChange(Application.ApplicationScreen.Game);
+                    break;
             }
         }
     }

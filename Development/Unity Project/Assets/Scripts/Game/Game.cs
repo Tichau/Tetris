@@ -80,6 +80,11 @@ public class Game : BlocGrid
     {
         get
         {
+            if (this.IsPaused)
+            {
+                return 0f;
+            }
+
             if (this.SpeedOverride > 0f)
             {
                 return this.SpeedOverride;
@@ -130,6 +135,11 @@ public class Game : BlocGrid
 
     public void Right()
     {
+        if (!this.IsGameStarted || this.IsPaused)
+        {
+            return;
+        }
+
         if (this.CurrentTetromino == null)
         {
             return;
@@ -154,6 +164,11 @@ public class Game : BlocGrid
 
     public void Left()
     {
+        if (!this.IsGameStarted || this.IsPaused)
+        {
+            return;
+        }
+
         if (this.CurrentTetromino == null)
         {
             return;
@@ -178,6 +193,11 @@ public class Game : BlocGrid
 
     public void RotateRight()
     {
+        if (!this.IsGameStarted || this.IsPaused)
+        {
+            return;
+        }
+
         if (this.CurrentTetromino == null)
         {
             return;
@@ -211,17 +231,6 @@ public class Game : BlocGrid
         }
     }
 
-    public void MoveCurrentTetromino(Position newPosition, float angle)
-    {
-        // Clear old positions.
-        this.ClearTetromino(this.CurrentTetromino);
-
-        this.CurrentTetromino.Position = newPosition;
-        this.CurrentTetromino.Angle = angle;
-
-        this.SetTetromino(this.CurrentTetromino);
-    }
-
     public void Pause()
     {
         if (!this.IsGameStarted)
@@ -230,16 +239,7 @@ public class Game : BlocGrid
             return;
         }
 
-        if (this.IsPaused)
-        {
-            this.IsPaused = false;
-            this.speed = this.GetSpeed(this.Statistics.Level);
-        }
-        else
-        {
-            this.IsPaused = true;
-            this.speed = 0;
-        }
+        this.IsPaused = !this.IsPaused;
     }
 
     public void Update(float deltaTime)
@@ -375,6 +375,17 @@ public class Game : BlocGrid
             this.Statistics.Lines += lineCount;
             this.Statistics.Score += this.GetScore(lineCount, this.Statistics.Level);
         }
+    }
+
+    private void MoveCurrentTetromino(Position newPosition, float angle)
+    {
+        // Clear old positions.
+        this.ClearTetromino(this.CurrentTetromino);
+
+        this.CurrentTetromino.Position = newPosition;
+        this.CurrentTetromino.Angle = angle;
+
+        this.SetTetromino(this.CurrentTetromino);
     }
 
     private void SetSpeed(float newSpeed)
