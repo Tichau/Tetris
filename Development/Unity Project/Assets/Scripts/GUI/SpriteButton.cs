@@ -54,17 +54,20 @@ public class SpriteButton : MonoBehaviour, IInputProvider
         this.IsUp = false;
         this.IsDown = false;
 
+#if UNITY_EDITOR
         // Mouse.
         if (Input.GetMouseButton(0))
         {
             Vector3 mousePosition = CameraController.Instance.Camera.ScreenToWorldPoint(Input.mousePosition);
             newActiveState |= this.buttonCollider2D.OverlapPoint(mousePosition);
         }
-
+#endif
+        
         // Touch.
         for (int touchIndex = 0; touchIndex < Input.touchCount; touchIndex++)
         {
-            Vector3 touchPosition = CameraController.Instance.Camera.ScreenToWorldPoint(Input.GetTouch(touchIndex).position);
+            Touch touch = Input.GetTouch(touchIndex);
+            Vector3 touchPosition = CameraController.Instance.Camera.ScreenToWorldPoint(touch.position);
             newActiveState |= this.buttonCollider2D.OverlapPoint(touchPosition);
         }
 
