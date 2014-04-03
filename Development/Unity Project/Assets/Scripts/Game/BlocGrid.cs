@@ -58,6 +58,12 @@ public class BlocGrid
         for (int index = 0; index < tetromino.Blocs.Length; index++)
         {
             Bloc tetrominoBloc = tetromino.Blocs[index];
+            Bloc currentBloc = this.GetBloc(tetrominoBloc.LastRegisteredPosition);
+            if (currentBloc == null || currentBloc.Tetromino != tetromino)
+            {
+                continue;
+            }
+
             this.SetBloc(tetrominoBloc.LastRegisteredPosition, null);
         }
     }

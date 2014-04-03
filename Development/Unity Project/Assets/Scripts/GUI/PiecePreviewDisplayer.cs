@@ -52,7 +52,7 @@ public class PiecePreviewDisplayer : MonoBehaviour
             return;
         }
 
-        Tetromino tetromino = new Tetromino(nextTetrominos.Peek());
+        Tetromino tetromino = new Tetromino(nextTetrominos.Peek(), false);
 
         switch (tetromino.Type)
         {

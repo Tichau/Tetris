@@ -39,7 +39,11 @@ public class Game : BlocGrid
     private float speed = 0.0f;
     private TetrominoGenerator tetrominoGenerator = new TetrominoGenerator(1);
     private int startLevel = 0;
-    
+
+    private Tetromino ghostTetromino;
+
+    private Tetromino currentTetromino;
+
     public Game(int width, int height)
         : base(width, height)
     {
@@ -94,10 +98,24 @@ public class Game : BlocGrid
         }
     }
 
-    public Tetromino CurrentTetromino 
-    { 
-        get; 
-        private set; 
+    public Tetromino CurrentTetromino
+    {
+        get
+        {
+            return this.currentTetromino;
+        }
+
+        private set
+        {
+            this.currentTetromino = value;
+
+            if (this.ghostTetromino != null)
+            {
+                this.ClearTetromino(this.ghostTetromino);
+            }
+
+            this.ghostTetromino = this.currentTetromino != null ? this.currentTetromino.CreateGhost() : null;
+        }
     }
 
     public void StartGame(int startLevel = 0)
@@ -118,15 +136,10 @@ public class Game : BlocGrid
     {
         Tetromino tetromino = this.tetrominoGenerator.PickNextTetromino();
         Position originSpawnLocation = new Position((this.Width / 2) - 2, this.Height) + tetromino.SpawnLocationOffset;
-        tetromino.Position = originSpawnLocation;
         this.CurrentTetromino = tetromino;
 
-        for (int index = 0; index < this.CurrentTetromino.Blocs.Length; index++)
-        {
-            Bloc tetrominoBloc = this.CurrentTetromino.Blocs[index];
-            this.SetBloc(tetrominoBloc.Position, tetrominoBloc);
-        }
-
+        this.MoveCurrentTetromino(originSpawnLocation, tetromino.Angle);
+        
         if (this.CurrentTetrominoChange != null)
         {
             this.CurrentTetrominoChange.Invoke(this, null);
@@ -151,7 +164,7 @@ public class Game : BlocGrid
             bool isAtRight = bloc.Position.X == this.Width - 1;
 
             Bloc blocAtRight = this.GetBloc(new Position(bloc.Position.X + 1, bloc.Position.Y));
-            isAtRight |= blocAtRight != null && blocAtRight.Tetromino != bloc.Tetromino;
+            isAtRight |= blocAtRight != null && blocAtRight.Tetromino != bloc.Tetromino && !blocAtRight.IsGhost;
 
             if (isAtRight)
             {
@@ -180,7 +193,7 @@ public class Game : BlocGrid
             bool isAtLeft = bloc.Position.X == 0;
 
             Bloc blocAtLeft = this.GetBloc(new Position(bloc.Position.X - 1, bloc.Position.Y));
-            isAtLeft |= blocAtLeft != null && blocAtLeft.Tetromino != bloc.Tetromino;
+            isAtLeft |= blocAtLeft != null && blocAtLeft.Tetromino != bloc.Tetromino && !blocAtLeft.IsGhost;
 
             if (isAtLeft)
             {
@@ -215,7 +228,7 @@ public class Game : BlocGrid
             isSomeBlocOnNewPosition |= bloc.Position.X < 0 || bloc.Position.X >= this.Width || bloc.Position.Y < 0;
 
             Bloc blocAtPosition = this.GetBloc(bloc.Position);
-            isSomeBlocOnNewPosition |= blocAtPosition != null && blocAtPosition.Tetromino != bloc.Tetromino;
+            isSomeBlocOnNewPosition |= blocAtPosition != null && blocAtPosition.Tetromino != bloc.Tetromino && !blocAtPosition.IsGhost;
 
             if (isSomeBlocOnNewPosition)
             {
@@ -261,7 +274,7 @@ public class Game : BlocGrid
                 isAtTheBottom |= tetrominoBloc.Position.Y == 0;
 
                 Bloc blocUnder = this.GetBloc(new Position(tetrominoBloc.Position.X, tetrominoBloc.Position.Y - 1));
-                isAtTheBottom |= blocUnder != null && blocUnder.Tetromino != tetrominoBloc.Tetromino;
+                isAtTheBottom |= blocUnder != null && blocUnder.Tetromino != tetrominoBloc.Tetromino && !blocUnder.IsGhost;
 
                 if (isAtTheBottom)
                 {
@@ -386,6 +399,40 @@ public class Game : BlocGrid
         this.CurrentTetromino.Angle = angle;
 
         this.SetTetromino(this.CurrentTetromino);
+
+        // Ghost.
+        this.ClearTetromino(this.ghostTetromino);
+        this.ghostTetromino.Position = new Position(newPosition.X, newPosition.Y);
+        this.ghostTetromino.Angle = this.CurrentTetromino.Angle;
+
+        bool collision = false;
+        do
+        {
+            this.ghostTetromino.Position = new Position(this.ghostTetromino.Position.X, this.ghostTetromino.Position.Y - 1);
+
+            for (int index = 0; index < this.ghostTetromino.Blocs.Length; index++)
+            {
+                Bloc ghostBloc = this.ghostTetromino.Blocs[index];
+                if (ghostBloc.Position.Y < 0)
+                {
+                    collision = true;
+                    break;
+                }
+                
+                Bloc bloc = this.GetBloc(ghostBloc.Position);
+                collision |= bloc != null && bloc.Tetromino != this.CurrentTetromino && bloc.Tetromino != this.ghostTetromino;
+
+                if (collision)
+                {
+                    break;
+                }
+            }
+        }
+        while (!collision);
+
+        this.ghostTetromino.Position = new Position(this.ghostTetromino.Position.X, this.ghostTetromino.Position.Y + 1);
+
+        this.SetTetromino(this.ghostTetromino);
     }
 
     private void SetSpeed(float newSpeed)

@@ -1,14 +1,13 @@
 ﻿// <copyright file="Bloc.cs" company="BlobTeam">Copyright BlobTeam. All rights reserved.</copyright>
 
-using System.Collections;
-
 public class Bloc
 {
-    public Bloc(Tetromino tetromino, Position localPosition)
+    public Bloc(Tetromino tetromino, Position localPosition, bool isGhost)
     {
         this.Tetromino = tetromino;
         this.LocalPosition = localPosition;
         this.LastRegisteredPosition = Position.Invalid;
+        this.IsGhost = isGhost;
     }
 
     public Position LastRegisteredPosition
@@ -39,6 +38,12 @@ public class Bloc
     public Tetromino Tetromino
     {
         get; 
+        private set;
+    }
+
+    public bool IsGhost
+    {
+        get;
         private set;
     }
 }

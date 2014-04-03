@@ -122,6 +122,12 @@ public class BlocGridRenderer : MonoBehaviour
 
                 this.blocRenderers[x, y].gameObject.transform.position = new Vector3(position.x, position.y, -1);
 
+                if (bloc.IsGhost)
+                {
+                    this.blocRenderers[x, y].SetColor(BlocSpriteDescription.BlocColor.Ghost);
+                    continue;
+                }
+
                 switch (bloc.Tetromino.Type)
                 {
                     case Tetromino.TetrominoType.I:

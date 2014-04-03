@@ -25,5 +25,7 @@ public class BlocSpriteDescription
         Purple = 5,
         Red = 6,
         Yellow = 7,
+
+        Ghost = 8,
     }
 }

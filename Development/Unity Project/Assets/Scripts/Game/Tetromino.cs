@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class Tetromino
 {
-    public Tetromino(TetrominoType type)
+    public Tetromino(TetrominoType type, bool isGhost)
     {
         this.Type = type;
         this.Angle = 180;
@@ -16,64 +16,64 @@ public class Tetromino
         {
             case Tetromino.TetrominoType.I:
                 this.Blocs = new Bloc[4];
-                this.Blocs[0] = new Bloc(this, new Position(0, 0));
-                this.Blocs[1] = new Bloc(this, new Position(1, 0));
-                this.Blocs[2] = new Bloc(this, new Position(2, 0));
-                this.Blocs[3] = new Bloc(this, new Position(3, 0));
+                this.Blocs[0] = new Bloc(this, new Position(0, 0), isGhost);
+                this.Blocs[1] = new Bloc(this, new Position(1, 0), isGhost);
+                this.Blocs[2] = new Bloc(this, new Position(2, 0), isGhost);
+                this.Blocs[3] = new Bloc(this, new Position(3, 0), isGhost);
                 this.Pivot = new Vector2(1.5f, 0.5f);
                 this.SpawnLocationOffset = new Position(0, 0);
                 break;
             case Tetromino.TetrominoType.O:
                 this.Blocs = new Bloc[4];
-                this.Blocs[0] = new Bloc(this, new Position(0, 0));
-                this.Blocs[1] = new Bloc(this, new Position(1, 0));
-                this.Blocs[2] = new Bloc(this, new Position(0, 1));
-                this.Blocs[3] = new Bloc(this, new Position(1, 1));
+                this.Blocs[0] = new Bloc(this, new Position(0, 0), isGhost);
+                this.Blocs[1] = new Bloc(this, new Position(1, 0), isGhost);
+                this.Blocs[2] = new Bloc(this, new Position(0, 1), isGhost);
+                this.Blocs[3] = new Bloc(this, new Position(1, 1), isGhost);
                 this.Pivot = new Vector2(0.5f, 0.5f);
                 this.SpawnLocationOffset = new Position(1, 0);
                 break;
             case Tetromino.TetrominoType.T:
                 this.Blocs = new Bloc[4];
-                this.Blocs[0] = new Bloc(this, new Position(0, 0));
-                this.Blocs[1] = new Bloc(this, new Position(1, 0));
-                this.Blocs[2] = new Bloc(this, new Position(2, 0));
-                this.Blocs[3] = new Bloc(this, new Position(1, 1));
+                this.Blocs[0] = new Bloc(this, new Position(0, 0), isGhost);
+                this.Blocs[1] = new Bloc(this, new Position(1, 0), isGhost);
+                this.Blocs[2] = new Bloc(this, new Position(2, 0), isGhost);
+                this.Blocs[3] = new Bloc(this, new Position(1, 1), isGhost);
                 this.Pivot = new Vector2(1f, 0f);
                 this.SpawnLocationOffset = new Position(0, 0);
                 break;
             case Tetromino.TetrominoType.L:
                 this.Blocs = new Bloc[4];
-                this.Blocs[0] = new Bloc(this, new Position(0, 0));
-                this.Blocs[1] = new Bloc(this, new Position(1, 0));
-                this.Blocs[2] = new Bloc(this, new Position(2, 0));
-                this.Blocs[3] = new Bloc(this, new Position(2, 1));
+                this.Blocs[0] = new Bloc(this, new Position(0, 0), isGhost);
+                this.Blocs[1] = new Bloc(this, new Position(1, 0), isGhost);
+                this.Blocs[2] = new Bloc(this, new Position(2, 0), isGhost);
+                this.Blocs[3] = new Bloc(this, new Position(2, 1), isGhost);
                 this.Pivot = new Vector2(1f, 0f);
                 this.SpawnLocationOffset = new Position(0, 0);
                 break;
             case Tetromino.TetrominoType.J:
                 this.Blocs = new Bloc[4];
-                this.Blocs[0] = new Bloc(this, new Position(0, 0));
-                this.Blocs[1] = new Bloc(this, new Position(1, 0));
-                this.Blocs[2] = new Bloc(this, new Position(2, 0));
-                this.Blocs[3] = new Bloc(this, new Position(0, 1));
+                this.Blocs[0] = new Bloc(this, new Position(0, 0), isGhost);
+                this.Blocs[1] = new Bloc(this, new Position(1, 0), isGhost);
+                this.Blocs[2] = new Bloc(this, new Position(2, 0), isGhost);
+                this.Blocs[3] = new Bloc(this, new Position(0, 1), isGhost);
                 this.Pivot = new Vector2(1f, 0f);
                 this.SpawnLocationOffset = new Position(0, 0);
                 break;
             case Tetromino.TetrominoType.Z:
                 this.Blocs = new Bloc[4];
-                this.Blocs[0] = new Bloc(this, new Position(1, 0));
-                this.Blocs[1] = new Bloc(this, new Position(2, 0));
-                this.Blocs[2] = new Bloc(this, new Position(0, 1));
-                this.Blocs[3] = new Bloc(this, new Position(1, 1));
+                this.Blocs[0] = new Bloc(this, new Position(1, 0), isGhost);
+                this.Blocs[1] = new Bloc(this, new Position(2, 0), isGhost);
+                this.Blocs[2] = new Bloc(this, new Position(0, 1), isGhost);
+                this.Blocs[3] = new Bloc(this, new Position(1, 1), isGhost);
                 this.Pivot = new Vector2(1f, 0f);
                 this.SpawnLocationOffset = new Position(0, 0);
                 break;
             case Tetromino.TetrominoType.S:
                 this.Blocs = new Bloc[4];
-                this.Blocs[0] = new Bloc(this, new Position(0, 0));
-                this.Blocs[1] = new Bloc(this, new Position(1, 0));
-                this.Blocs[2] = new Bloc(this, new Position(1, 1));
-                this.Blocs[3] = new Bloc(this, new Position(2, 1));
+                this.Blocs[0] = new Bloc(this, new Position(0, 0), isGhost);
+                this.Blocs[1] = new Bloc(this, new Position(1, 0), isGhost);
+                this.Blocs[2] = new Bloc(this, new Position(1, 1), isGhost);
+                this.Blocs[3] = new Bloc(this, new Position(2, 1), isGhost);
                 this.Pivot = new Vector2(1f, 0f);
                 this.SpawnLocationOffset = new Position(0, 0);
                 break;
@@ -114,7 +114,7 @@ public class Tetromino
         get;
         set;
     }
-
+    
     public Position SpawnLocationOffset
     {
         get;
@@ -125,5 +125,15 @@ public class Tetromino
     {
         get;
         private set;
+    }
+
+    public Tetromino CreateGhost()
+    {
+        Tetromino clone = new Tetromino(this.Type, true);
+
+        clone.Position = this.Position;
+        clone.Angle = this.Angle;
+
+        return clone;
     }
 }

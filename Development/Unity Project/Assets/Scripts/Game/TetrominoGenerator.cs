@@ -42,7 +42,7 @@ public class TetrominoGenerator
 
         this.NextTetrominos.Enqueue(this.PickNewTetromino());
 
-        return new Tetromino(nextTetrominoType);
+        return new Tetromino(nextTetrominoType, false);
     }
 
     public void Reset()
