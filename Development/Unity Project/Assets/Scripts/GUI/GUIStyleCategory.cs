@@ -1,4 +1,4 @@
-﻿// <copyright file="GUIStyleCategory.cs" company="BlobTeam">Copyright BlobTeam. All rights reserved.</copyright>
+﻿// <copyright file="GUIStyleCategory.cs" company="1WeekEndStudio">Copyright 1WeekEndStudio. All rights reserved.</copyright>
 
 public enum GUIStyleCategory
 {

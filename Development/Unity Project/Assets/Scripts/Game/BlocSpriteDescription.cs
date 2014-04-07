@@ -1,4 +1,4 @@
-﻿// <copyright file="BlocSpriteDescription.cs" company="BlobTeam">Copyright BlobTeam. All rights reserved.</copyright>
+﻿// <copyright file="BlocSpriteDescription.cs" company="1WeekEndStudio">Copyright 1WeekEndStudio. All rights reserved.</copyright>
 
 [System.Serializable]
 public class BlocSpriteDescription

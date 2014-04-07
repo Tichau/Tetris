@@ -1,4 +1,4 @@
-﻿// <copyright file="RectType.cs" company="BlobTeam">Copyright BlobTeam. All rights reserved.</copyright>
+﻿// <copyright file="RectType.cs" company="1WeekEndStudio">Copyright 1WeekEndStudio. All rights reserved.</copyright>
 
 public enum RectType
 {

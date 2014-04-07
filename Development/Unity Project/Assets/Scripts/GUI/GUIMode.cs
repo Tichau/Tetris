@@ -1,4 +1,4 @@
-﻿// <copyright file="GUIMode.cs" company="BlobTeam">Copyright BlobTeam. All rights reserved.</copyright>
+﻿// <copyright file="GUIMode.cs" company="1WeekEndStudio">Copyright 1WeekEndStudio. All rights reserved.</copyright>
 
 public enum GUIMode
 {

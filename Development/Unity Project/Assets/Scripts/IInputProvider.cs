@@ -1,4 +1,4 @@
-﻿// <copyright file="IInputProvider.cs" company="BlobTeam">Copyright BlobTeam. All rights reserved.</copyright>
+﻿// <copyright file="IInputProvider.cs" company="1WeekEndStudio">Copyright 1WeekEndStudio. All rights reserved.</copyright>
 
 public interface IInputProvider
 {

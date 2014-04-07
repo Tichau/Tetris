@@ -1,4 +1,4 @@
-﻿// <copyright file="Localization.cs" company="BlobTeam">Copyright BlobTeam. All rights reserved.</copyright>
+﻿// <copyright file="Localization.cs" company="1WeekEndStudio">Copyright 1WeekEndStudio. All rights reserved.</copyright>
 
 using System.Collections.Generic;
 

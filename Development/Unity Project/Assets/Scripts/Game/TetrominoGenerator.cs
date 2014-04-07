@@ -1,4 +1,4 @@
-﻿// <copyright file="TetrominoGenerator.cs" company="BlobTeam">Copyright BlobTeam. All rights reserved.</copyright>
+﻿// <copyright file="TetrominoGenerator.cs" company="1WeekEndStudio">Copyright 1WeekEndStudio. All rights reserved.</copyright>
 
 using System;
 using System.Collections.Generic;

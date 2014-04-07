@@ -1,4 +1,6 @@
-﻿// <copyright file="HighScoresDisplayer.cs" company="BlobTeam">Copyright BlobTeam. All rights reserved.</copyright>
+﻿// <copyright file="HighScoresDisplayer.cs" company="1WeekEndStudio">Copyright 1WeekEndStudio. All rights reserved.</copyright>
+
+using System.Collections.ObjectModel;
 
 using UnityEngine;
 
