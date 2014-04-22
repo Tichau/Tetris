@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GUIManager : MonoBehaviour
+public partial class GUIManager : MonoBehaviour
 {
     public const float Margin = 30f;
 
@@ -34,7 +34,11 @@ public class GUIManager : MonoBehaviour
     [SerializeField]
     private GUIStyle settingsButtonStyle;
     [SerializeField]
-    private GUIStyle controlButtonStyle;
+    private GUIStyle profileButtonStyle;
+    [SerializeField]
+    private GUIStyle profileButtonLightStyle;
+    [SerializeField]
+    private GUIStyle refreshButtonStyle;
 
     [SerializeField]
     private GUIStyle bigTextStyle;
@@ -48,8 +52,8 @@ public class GUIManager : MonoBehaviour
     [SerializeField]
     private GameObject piecePreviewPanel;
 
-    private float windowWidth = 300f;
-    private float windowHeight = 100f;
+    private float windowWidth = 400f;
+    private float windowHeight = 300f;
 
     public static GUIManager Instance
     {
@@ -131,6 +135,9 @@ public class GUIManager : MonoBehaviour
         this.guiStylesByCategory.Add(GUIStyleCategory.PlayButton, new GUIStyle(this.playButtonStyle));
         this.guiStylesByCategory.Add(GUIStyleCategory.PauseButton, new GUIStyle(this.pauseButtonStyle));
         this.guiStylesByCategory.Add(GUIStyleCategory.SettingsButton, new GUIStyle(this.settingsButtonStyle));
+        this.guiStylesByCategory.Add(GUIStyleCategory.ProfileButton, new GUIStyle(this.profileButtonStyle));
+        this.guiStylesByCategory.Add(GUIStyleCategory.RefreshButton, new GUIStyle(this.refreshButtonStyle));
+        this.guiStylesByCategory.Add(GUIStyleCategory.ProfileButtonLight, new GUIStyle(this.profileButtonLightStyle));
 
         this.guiStylesByCategory.Add(GUIStyleCategory.Light, new GUIStyle(this.lightStyle));
         this.guiStylesByCategory.Add(GUIStyleCategory.Dark, new GUIStyle(this.darkStyle));
@@ -146,6 +153,8 @@ public class GUIManager : MonoBehaviour
         float guiRatio = this.GetGuiRatio();
         this.guiStylesByCategory[GUIStyleCategory.Light].fontSize = Mathf.FloorToInt(this.lightStyle.fontSize * guiRatio);
         this.guiStylesByCategory[GUIStyleCategory.Dark].fontSize = Mathf.FloorToInt(this.darkStyle.fontSize * guiRatio);
+        this.guiStylesByCategory[GUIStyleCategory.ProfileButton].fontSize = Mathf.FloorToInt(this.profileButtonStyle.fontSize * guiRatio);
+        this.guiStylesByCategory[GUIStyleCategory.ProfileButtonLight].fontSize = Mathf.FloorToInt(this.profileButtonStyle.fontSize * guiRatio);
 
         this.guiStylesByCategory[GUIStyleCategory.BigText].fontSize = Mathf.FloorToInt(this.bigTextStyle.fontSize * guiRatio);
         this.guiStylesByCategory[GUIStyleCategory.Text].fontSize = Mathf.FloorToInt(this.textStyle.fontSize * guiRatio);
@@ -165,14 +174,6 @@ public class GUIManager : MonoBehaviour
     private void OnGUI()
     {
         Game game = Application.Instance.Game;
-        ////if (!game.IsGameStarted)
-        ////{
-        ////    GUI.Label(this.GetRect(0f, 0f, 380f, 50f, RectType.Centered), Localization.GetLocalizedString("%StartGameInfo"), this.GetGuiStyle(GUIStyleCategory.Light));
-        ////}
-        ////else if (game.IsPaused)
-        ////{
-        ////    GUI.ModalWindow(0, this.GetRect(0f, 0f, this.windowWidth, this.windowHeight, RectType.Centered), this.PauseWindow, Localization.GetLocalizedString("%PauseTitle"), this.GetGuiStyle(GUIStyleCategory.Light));
-        ////}
 
         if (game.IsGameStarted && !game.IsPaused)
         {
@@ -185,9 +186,50 @@ public class GUIManager : MonoBehaviour
         {
             if (GUI.Button(this.GetRect(5f, 5f, this.menuButtonSize, this.menuButtonSize), string.Empty, this.GetGuiStyle(GUIStyleCategory.PlayButton)))
             {
-                Application.Instance.PostScreenChange(Application.ApplicationScreen.Game);
+                Application.Instance.BackToScreen(Application.ApplicationScreen.Game);
                 Application.Instance.Input(Application.PlayerAction.Pause);
             }
+        }
+
+        string currentProfileName = ProfileManager.Instance.CurrentProfile != null ? ProfileManager.Instance.CurrentProfile.Name : Localization.GetLocalizedString("%NoProfileSelected");
+        if (GUI.Button(this.GetRect(5f + this.menuButtonSize + 5f, 5f, this.menuButtonSize, this.menuButtonSize), currentProfileName, this.GetGuiStyle(GUIStyleCategory.ProfileButton)))
+        {
+            if (game.IsGameStarted && !game.IsPaused)
+            {
+                Application.Instance.Input(Application.PlayerAction.Pause);
+            }
+
+            Application.Instance.PostScreenChange(Application.ApplicationScreen.Profile);
+        }
+
+        float profileButtonSize = this.menuButtonSize + this.GetGuiStyle(GUIStyleCategory.ProfileButton).CalcSize(new GUIContent(currentProfileName)).x;
+        if (ProfileManager.Instance.CurrentProfile != null && !ProfileManager.Instance.CurrentProfile.IsSynchronized)
+        {
+            if (GUI.Button(this.GetRect(5f + this.menuButtonSize + 5f + profileButtonSize, 5f, this.menuButtonSize, this.menuButtonSize), string.Empty, this.GetGuiStyle(GUIStyleCategory.RefreshButton)))
+            {
+                ProfileManager.Instance.SynchronizeProfile(ProfileManager.Instance.CurrentProfile);
+            }
+        }
+
+        if (Application.Instance.CurrentScreen == Application.ApplicationScreen.Profile)
+        {
+            GUI.ModalWindow(0, this.GetRect(0f, 0f, this.windowWidth, this.windowHeight, RectType.Centered), this.ProfileWindow, Localization.GetLocalizedString("%ProfilesWindowTitle"), this.GetGuiStyle(GUIStyleCategory.Light));
+        }
+        else if (Application.Instance.CurrentScreen == Application.ApplicationScreen.ProfileCreation)
+        {
+            GUI.ModalWindow(0, this.GetRect(0f, 0f, this.windowWidth, this.windowHeight, RectType.Centered), this.ProfileCreationWindow, Localization.GetLocalizedString("%ProfileCreationWindowTitle"), this.GetGuiStyle(GUIStyleCategory.Light));
+        }
+        else if (Application.Instance.CurrentScreen == Application.ApplicationScreen.RegisterScore)
+        {
+            GUI.ModalWindow(0, this.GetRect(0f, 0f, this.windowWidth, this.windowHeight, RectType.Centered), this.CongratulationWindow, Localization.GetLocalizedString("%GameOver"), this.GetGuiStyle(GUIStyleCategory.Light));
+        }
+        else if (Application.Instance.CurrentScreen == Application.ApplicationScreen.OnlineProfileConnection)
+        {
+            GUI.ModalWindow(0, this.GetRect(0f, 0f, this.windowWidth, this.windowHeight, RectType.Centered), this.OnlineProfileConnectionWindow, Localization.GetLocalizedString("%ProfileConnectionWindowTitle"), this.GetGuiStyle(GUIStyleCategory.Light));
+        }
+        else if (Application.Instance.CurrentScreen == Application.ApplicationScreen.OnlineProfileCreation)
+        {
+            GUI.ModalWindow(0, this.GetRect(0f, 0f, this.windowWidth, this.windowHeight, RectType.Centered), this.OnlineProfileCreationWindow, Localization.GetLocalizedString("%ProfileCreationWindowTitle"), this.GetGuiStyle(GUIStyleCategory.Light));
         }
 
         float margin = this.GetLenght(5f);
@@ -206,22 +248,9 @@ public class GUIManager : MonoBehaviour
                     break;
 
                 case Application.ApplicationScreen.Settings:
-                    Application.Instance.PostScreenChange(Application.ApplicationScreen.Game);
+                    Application.Instance.BackToLastScreen();
                     break;
             }
-        }
-    }
-
-    private void PauseWindow(int windowId)
-    {
-        const float ButtonWidth = 100f;
-        const float ButtonHeight = 40f;
-
-        float left = (this.windowWidth / 2f) - (ButtonWidth / 2f);
-        float top = 50f;
-        if (GUI.Button(this.GetRect(left, top, ButtonWidth, ButtonHeight), Localization.GetLocalizedString("%Continue"), this.GetGuiStyle(GUIStyleCategory.Dark)))
-        {
-            Application.Instance.Input(Application.PlayerAction.Pause);
         }
     }
 }

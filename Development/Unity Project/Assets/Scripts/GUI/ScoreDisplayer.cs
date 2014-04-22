@@ -37,7 +37,7 @@ public class ScoreDisplayer : MonoBehaviour
         GUI.Label(new Rect(insideMargin, insideMargin, scorePanelWidth, scoreTitleHeight), Application.Instance.Game.Statistics.Score.ToString(), GUIManager.Instance.GetGuiStyle(GUIStyleCategory.BigText));
 
         GUI.Label(new Rect(insideMargin, secondLineTop, numbersAlignement, subTitleHeight), Localization.GetLocalizedString("%Level"), GUIManager.Instance.GetGuiStyle(GUIStyleCategory.Text));
-        GUI.Label(new Rect(insideMargin + numbersAlignement, secondLineTop, scorePanelWidth - numbersAlignement, subTitleHeight), (Application.Instance.Game.Statistics.Level + 1).ToString(), GUIManager.Instance.GetGuiStyle(GUIStyleCategory.Text));
+        GUI.Label(new Rect(insideMargin + numbersAlignement, secondLineTop, scorePanelWidth - numbersAlignement, subTitleHeight), (Application.Instance.Game.Statistics.StartLevel + 1).ToString(), GUIManager.Instance.GetGuiStyle(GUIStyleCategory.Text));
 
         GUI.Label(new Rect(insideMargin, thirdLineTop, scorePanelWidth, subTitleHeight), Localization.GetLocalizedString("%Lines"), GUIManager.Instance.GetGuiStyle(GUIStyleCategory.Text));
         GUI.Label(new Rect(insideMargin + numbersAlignement, thirdLineTop, scorePanelWidth - numbersAlignement, subTitleHeight), Application.Instance.Game.Statistics.Lines.ToString(), GUIManager.Instance.GetGuiStyle(GUIStyleCategory.Text));

@@ -7,8 +7,12 @@ public enum GUIStyleCategory
     PlayButton,
     PauseButton,
     SettingsButton,
+    ProfileButton,
+    ProfileButtonLight,
+    RefreshButton,
     BigText,
     Text,
     SmallText,
     RightAlignSmallText,
+
 }

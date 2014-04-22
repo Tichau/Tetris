@@ -53,12 +53,24 @@ public static class Localization
                 localizedString.Add("%StartGameInfo", "Press \"Enter\" to start a new game");
                 localizedString.Add("%Level", "Level");
                 localizedString.Add("%Lines", "Lines");
+                localizedString.Add("%Score", "Score");
                 localizedString.Add("%HighScores", "High Scores");
                 localizedString.Add("%Continue", "Continue");
                 localizedString.Add("%EnterYourName", "Enter your name:");
                 localizedString.Add("%Register", "Register");
                 localizedString.Add("%Congratulation", "Congratulations you're in the high scores !");
                 localizedString.Add("%Player", "Player");
+                localizedString.Add("%ProfilesWindowTitle", "Choose profile");
+                localizedString.Add("%Back", "Back");
+                localizedString.Add("%NewProfile", "New Profile");
+                localizedString.Add("%ProfileCreationWindowTitle", "Profile creation");
+                localizedString.Add("%Pseudo", "Pseudo");
+                localizedString.Add("%NoProfileSelected", "No profile selected");
+                localizedString.Add("%Create", "Create");
+                localizedString.Add("%AnonymousProfileName", "Anonymous");
+                localizedString.Add("%GameOver", "Game Over");
+                localizedString.Add("%ScoreRegisteringDescription", "Register for");
+                localizedString.Add("%Cancel", "Cancel");
                 break;
 
             case Language.French:
@@ -72,6 +84,15 @@ public static class Localization
                 localizedString.Add("%Register", "Valider");
                 localizedString.Add("%Congratulation", "Félicitations vous êtes dans les meilleurs scores !");
                 localizedString.Add("%Player", "Joueur");
+                localizedString.Add("%ProfilesWindowTitle", "Choix du profil");
+                localizedString.Add("%Back", "Retour");
+                localizedString.Add("%NewProfile", "Nouveau Profile");
+                localizedString.Add("%ProfileCreationWindowTitle", "Création de Profile");
+                localizedString.Add("%Pseudo", "Pseudo");
+                localizedString.Add("%NoProfileSelected", "Profile non sélectionné");
+                localizedString.Add("%Create", "Créer");
+                localizedString.Add("%AnonymousProfileName", "Anonyme");
+                localizedString.Add("%GameOver", "Game Over");
                 break;
         }
 

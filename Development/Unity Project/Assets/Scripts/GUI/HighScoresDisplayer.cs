@@ -33,12 +33,13 @@ public class HighScoresDisplayer : MonoBehaviour
 
         GUI.Label(new Rect(left, top, rankIndexWidth + playerNameWidth + scoreWidth, highScoreTitleHeight), Localization.GetLocalizedString("%HighScores"), guiManager.GetGuiStyle(GUIStyleCategory.BigText));
 
-        for (int index = 0; index < HighScores.HighScoresCollection.Count; index++)
+        ReadOnlyCollection<NamedGameStatistics> highScoresCollection = HighScoresManager.Instance.HighScoresCollection;
+        for (int index = 0; index < highScoresCollection.Count; index++)
         {
-            GameStatistics gameStatistics = HighScores.HighScoresCollection[index];
+            NamedGameStatistics gameStatistics = highScoresCollection[index];
             float scoreLineTop = top + firstOffset + (index * offset);
             GUI.Label(new Rect(left, scoreLineTop, rankIndexWidth, highScoreLineHeight), (index + 1).ToString(), guiManager.GetGuiStyle(GUIStyleCategory.SmallText));
-            GUI.Label(new Rect(left + rankIndexWidth, scoreLineTop, playerNameWidth, highScoreLineHeight), gameStatistics.PlayerName, guiManager.GetGuiStyle(GUIStyleCategory.SmallText));
+            GUI.Label(new Rect(left + rankIndexWidth, scoreLineTop, playerNameWidth, highScoreLineHeight), gameStatistics.ProfileName, guiManager.GetGuiStyle(GUIStyleCategory.SmallText));
             GUI.Label(new Rect(left + playerNameWidth, scoreLineTop, scoreWidth, highScoreLineHeight), gameStatistics.Score.ToString(), guiManager.GetGuiStyle(GUIStyleCategory.RightAlignSmallText));
         }
     }

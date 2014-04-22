@@ -17,10 +17,18 @@ public class Application : MonoBehaviour
     private Vector3 offset;
     private Vector3 wantedOffset;
 
+    private List<ApplicationScreen> applicationScreens = new List<ApplicationScreen>();
+
     public enum ApplicationScreen
     {
+        None,
         Game,
         Settings,
+        Profile,
+        ProfileCreation,
+        OnlineProfileConnection,
+        OnlineProfileCreation,
+        RegisterScore,
     }
 
     public enum PlayerAction
@@ -49,14 +57,70 @@ public class Application : MonoBehaviour
 
     public ApplicationScreen CurrentScreen
     {
-        get;
-        private set;
+        get
+        {
+            if (this.applicationScreens.Count == 0)
+            {
+                return ApplicationScreen.None;
+            }
+
+            return this.applicationScreens[this.applicationScreens.Count - 1];
+        }
     }
 
     public Game Game
     {
         get;
         private set;
+    }
+
+    public void BackToLastScreen()
+    {
+        if (this.applicationScreens.Count <= 1)
+        {
+            return;
+        }
+
+        this.applicationScreens.RemoveAt(this.applicationScreens.Count - 1);
+
+        Debug.Log("Back to last screen. " + this.applicationScreens.Count + " screens queued. Current screen = " + this.CurrentScreen);
+
+        switch (this.CurrentScreen)
+        {
+            case ApplicationScreen.Game:
+                this.wantedOffset = new Vector3(0, 0, 0f);
+                break;
+
+            case ApplicationScreen.Settings:
+                this.wantedOffset = new Vector3(this.blocGridRenderer.RendererRect.width, 0, 0f);
+                break;
+        }
+    }
+
+    public void BackToScreen(ApplicationScreen screen)
+    {
+        for (int index = this.applicationScreens.Count - 1; index >= 1; --index)
+        {
+            if (this.applicationScreens[index] == screen)
+            {
+                break;
+            }
+
+            this.applicationScreens.RemoveAt(index);
+        }
+        
+        Debug.Log("Back to screen " + screen + ". " + this.applicationScreens.Count + " screens queued. Current screen = " + this.CurrentScreen);
+
+        switch (this.CurrentScreen)
+        {
+            case ApplicationScreen.Game:
+                this.wantedOffset = new Vector3(0, 0, 0f);
+                break;
+
+            case ApplicationScreen.Settings:
+                this.wantedOffset = new Vector3(this.blocGridRenderer.RendererRect.width, 0, 0f);
+                break;
+        }
     }
 
     public void PostScreenChange(ApplicationScreen screen)
@@ -66,16 +130,18 @@ public class Application : MonoBehaviour
             return;
         }
 
-        this.CurrentScreen = screen;
+        this.applicationScreens.Add(screen);
+
+        Debug.Log("screen " + screen + " queued. " + this.applicationScreens.Count + " screens queued. Current screen = " + this.CurrentScreen);
 
         switch (screen)
         {
             case ApplicationScreen.Game:
-                wantedOffset = new Vector3(0, 0, 0f);
+                this.wantedOffset = new Vector3(0, 0, 0f);
                 break;
 
             case ApplicationScreen.Settings:
-                wantedOffset = new Vector3(this.blocGridRenderer.RendererRect.width, 0, 0f);
+                this.wantedOffset = new Vector3(this.blocGridRenderer.RendererRect.width, 0, 0f);
                 break;
         }
     }
@@ -123,6 +189,8 @@ public class Application : MonoBehaviour
         GameObject rendererObject = Instantiate(this.rendererPrefab) as GameObject;
         this.blocGridRenderer = rendererObject.GetComponent<BlocGridRenderer>();
         this.blocGridRenderer.Initialize(this.Game, Vector2.zero);
+
+        this.PostScreenChange(ApplicationScreen.Game);
     }
 
     private void Update()

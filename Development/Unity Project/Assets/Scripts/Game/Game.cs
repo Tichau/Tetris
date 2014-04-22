@@ -125,8 +125,8 @@ public class Game : BlocGrid
         this.startLevel = startLevel;
 
         this.Statistics = new GameStatistics();
-        this.Statistics.Level = startLevel;
-        this.SetSpeed(this.GetSpeed(this.Statistics.Level));
+        this.Statistics.StartLevel = startLevel;
+        this.SetSpeed(this.GetSpeed(this.Statistics.StartLevel));
         this.tetrominoGenerator.Reset();
         this.NewTetromino();
         this.IsGameStarted = true;
@@ -319,23 +319,20 @@ public class Game : BlocGrid
     private void EndGame()
     {
         this.SpeedOverride = -1f;
-        if (HighScores.CanRegisterGameStatistic(this.Statistics))
-        {
-            InputManager.Instance.RegisterGameStatistic(this.Statistics);
-        }
-
         this.speed = 0f;
         this.CurrentTetromino = null;
         this.IsGameStarted = false;
+
+        Application.Instance.PostScreenChange(Application.ApplicationScreen.RegisterScore);
     }
 
     private void CheckLevel()
     {
         int newLevel = (this.Statistics.Lines / 10) + this.startLevel;
-        if (this.Statistics.Level != newLevel)
+        if (this.Statistics.StartLevel != newLevel)
         {
             // level up !
-            this.Statistics.Level = newLevel;
+            this.Statistics.StartLevel = newLevel;
             this.SetSpeed(this.GetSpeed(newLevel));
         }
     }
@@ -386,7 +383,7 @@ public class Game : BlocGrid
         if (lineCount > 0)
         {
             this.Statistics.Lines += lineCount;
-            this.Statistics.Score += this.GetScore(lineCount, this.Statistics.Level);
+            this.Statistics.Score += this.GetScore(lineCount, this.Statistics.StartLevel);
         }
     }
 
