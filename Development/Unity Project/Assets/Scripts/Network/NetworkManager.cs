@@ -344,7 +344,7 @@ public class NetworkManager : MonoBehaviour
 
         string[] results = www.text.Split('|');
 
-        if (results.Length > 1 && results[0] == "Success")
+        if (results.Length > 0 && results[0] == "Success")
         {
             List<NamedGameStatistics> requestResult = new List<NamedGameStatistics>(results.Length - 1);
             
