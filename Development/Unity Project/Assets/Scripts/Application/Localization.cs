@@ -49,28 +49,32 @@ public static class Localization
         switch (CurrentLanguage)
         {
             case Language.English:
-                localizedString.Add("%PauseTitle", "PAUSE");
-                localizedString.Add("%StartGameInfo", "Press \"Enter\" to start a new game");
+                localizedString.Add("%AnonymousProfileName", "Anonymous");
+                localizedString.Add("%Back", "Back");
+                localizedString.Add("%Cancel", "Cancel");
+                localizedString.Add("%ConfirmPassword", "Confirm");
+                localizedString.Add("%Congratulation", "Congratulations you're in the high scores !");
+                localizedString.Add("%Continue", "Continue");
+                localizedString.Add("%Create", "Create");
+                localizedString.Add("%EnterYourName", "Enter your name:");
+                localizedString.Add("%GameOver", "Game Over");
+                localizedString.Add("%HighScores", "High Scores");
                 localizedString.Add("%Level", "Level");
                 localizedString.Add("%Lines", "Lines");
-                localizedString.Add("%Score", "Score");
-                localizedString.Add("%HighScores", "High Scores");
-                localizedString.Add("%Continue", "Continue");
-                localizedString.Add("%EnterYourName", "Enter your name:");
+                localizedString.Add("%NoProfileSelected", "No profile selected");
+                localizedString.Add("%PauseTitle", "PAUSE");
                 localizedString.Add("%Register", "Register");
-                localizedString.Add("%Congratulation", "Congratulations you're in the high scores !");
+                localizedString.Add("%Score", "Score");
+                localizedString.Add("%ScoreRegisteringDescription", "Register for");
+                localizedString.Add("%StartGameInfo", "Press \"Enter\" to start a new game");
+                localizedString.Add("%Synchronize", "Synchronize");
                 localizedString.Add("%Player", "Player");
                 localizedString.Add("%ProfilesWindowTitle", "Choose profile");
-                localizedString.Add("%Back", "Back");
                 localizedString.Add("%NewProfile", "New Profile");
+                localizedString.Add("%Password", "Password");
+                localizedString.Add("%ProfileConnectionWindowTitle", "Connect to your profile");
                 localizedString.Add("%ProfileCreationWindowTitle", "Profile creation");
                 localizedString.Add("%Pseudo", "Pseudo");
-                localizedString.Add("%NoProfileSelected", "No profile selected");
-                localizedString.Add("%Create", "Create");
-                localizedString.Add("%AnonymousProfileName", "Anonymous");
-                localizedString.Add("%GameOver", "Game Over");
-                localizedString.Add("%ScoreRegisteringDescription", "Register for");
-                localizedString.Add("%Cancel", "Cancel");
                 break;
 
             case Language.French:
