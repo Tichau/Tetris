@@ -115,7 +115,7 @@ public partial class GUIManager : MonoBehaviour
         GUI.Label(new Rect(secondColumnLeft, top, secondColumnWidth, buttonHeight), ProfileToConnect.Name, this.GetGuiStyle(GUIStyleCategory.SmallText));
 
         GUI.Label(new Rect(left, top + buttonHeight, buttonWidth, buttonHeight), Localization.GetLocalizedString("%Password"), this.GetGuiStyle(GUIStyleCategory.SmallText));
-        this.password = GUI.TextField(new Rect(secondColumnLeft, top + buttonHeight, secondColumnWidth, buttonHeight), this.password, this.GetGuiStyle(GUIStyleCategory.Dark));
+        this.password = GUI.PasswordField(new Rect(secondColumnLeft, top + buttonHeight, secondColumnWidth, buttonHeight), this.password, '*', this.GetGuiStyle(GUIStyleCategory.Dark));
 
         left = (windowsWidth / 2f) - (buttonWidth / 2f);
         top += 2.5f * buttonHeight * 1.3f;
@@ -161,10 +161,10 @@ public partial class GUIManager : MonoBehaviour
         this.onlineCreateProfileName = GUI.TextField(new Rect(secondColumnLeft, top, secondColumnWidth, buttonHeight), this.onlineCreateProfileName, this.GetGuiStyle(GUIStyleCategory.Dark));
 
         GUI.Label(new Rect(left, top + (1.5f * buttonHeight), buttonWidth, buttonHeight), Localization.GetLocalizedString("%Password"), this.GetGuiStyle(GUIStyleCategory.SmallText));
-        this.password = GUI.TextField(new Rect(secondColumnLeft, top + (1.5f * buttonHeight), secondColumnWidth, buttonHeight), this.password, this.GetGuiStyle(GUIStyleCategory.Dark));
+        this.password = GUI.PasswordField(new Rect(secondColumnLeft, top + (1.5f * buttonHeight), secondColumnWidth, buttonHeight), this.password, '*', this.GetGuiStyle(GUIStyleCategory.Dark));
 
-        GUI.Label(new Rect(left, top + (2.7f * buttonHeight), buttonWidth, buttonHeight), Localization.GetLocalizedString("%Confirm"), this.GetGuiStyle(GUIStyleCategory.SmallText));
-        this.passwordConfirmation = GUI.TextField(new Rect(secondColumnLeft, top + (2.7f * buttonHeight), secondColumnWidth, buttonHeight), this.passwordConfirmation, this.GetGuiStyle(GUIStyleCategory.Dark));
+        GUI.Label(new Rect(left, top + (2.7f * buttonHeight), buttonWidth, buttonHeight), Localization.GetLocalizedString("%ConfirmPassword"), this.GetGuiStyle(GUIStyleCategory.SmallText));
+        this.passwordConfirmation = GUI.PasswordField(new Rect(secondColumnLeft, top + (2.7f * buttonHeight), secondColumnWidth, buttonHeight), this.passwordConfirmation, '*', this.GetGuiStyle(GUIStyleCategory.Dark));
 
         left = (windowsWidth / 2f) - (buttonWidth / 2f);
         top += 3.5f * buttonHeight * 1.3f;
