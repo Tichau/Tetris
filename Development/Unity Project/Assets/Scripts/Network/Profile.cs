@@ -59,6 +59,15 @@ public partial class Profile
         private set;
     }
 
+    public bool IsSynchronizable
+    {
+        get
+        {
+            // The ids lesser than -1 are not synchronizable (used for local profiles like anonymous profile).
+            return this.ID >= -1;
+        }
+    }
+
     public bool IsSynchronized
     {
         get
@@ -69,7 +78,9 @@ public partial class Profile
 
     public static void SaveEmptyProfile(string prefix)
     {
+        PlayerPrefs.SetInt(string.Format("{0}.ID", prefix), -1);
         PlayerPrefs.SetString(string.Format("{0}.Name", prefix), string.Empty);
+        PlayerPrefs.SetString(string.Format("{0}.Password", prefix), string.Empty);
     }
     
     public void RegisterScore(GameStatistics gameStatistics)
@@ -84,7 +95,7 @@ public partial class Profile
 
         gameStatistics.Registered = true;
 
-        HighScoresManager.Instance.RegisterScore(this, gameStatistics);
+        HighScoresManager.Instance.RegisterScore(this, gameStatistics, true);
 
         ProfileManager.Instance.SynchronizeProfile(this);
 
@@ -129,7 +140,7 @@ public partial class Profile
     {
         string result = string.Format("ID: {0} Name: {1} Password: {2}\nBestScore: {3}\n", this.ID, this.Name, this.Password, this.BestScore);
 
-        result += "UnsynchronizedScores\n";
+        result += this.UnsynchronizedScores.Count + " UnsynchronizedScores\n";
         for (int index = 0; index < this.UnsynchronizedScores.Count; index++)
         {
             result += this.UnsynchronizedScores[index] + "\n";

@@ -35,6 +35,12 @@ public class ProfileManager : MonoBehaviour
         private set;
     }
 
+    public bool IsLoaded
+    {
+        get;
+        private set;
+    }
+
     public void ChangeCurrentProfile(Profile profile)
     {
         this.CurrentProfile = profile;
@@ -42,9 +48,9 @@ public class ProfileManager : MonoBehaviour
         this.Save();
     }
 
-    public Profile CreateNewProfile(string newProfileName)
+    public Profile CreateNewProfile(string newProfileName, int id = -1)
     {
-        Profile profile = new Profile(newProfileName, -1);
+        Profile profile = new Profile(newProfileName, id);
 
         this.profiles.Add(profile);
 
@@ -65,7 +71,15 @@ public class ProfileManager : MonoBehaviour
         if (profile.ID < 0)
         {
             // It is a local profile.
-            NetworkManager.Instance.IsProfileExist(profile, this.CreateProfileDelegate);
+            if (profile.IsSynchronizable)
+            {
+                NetworkManager.Instance.IsProfileExist(profile, this.CreateProfileDelegate);
+            }
+            else
+            {
+                // It is a local profile only, try to create a new profile from the data of the current one.
+                this.CreateProfileDelegate(profile, false);
+            }
         }
         else
         {
@@ -108,9 +122,7 @@ public class ProfileManager : MonoBehaviour
         if (this.profiles.Count == 0)
         {
             // Create a default profile.
-            Profile defaultProfile = new Profile(Localization.GetLocalizedString("%AnonymousProfileName"), -1);
-
-            this.profiles.Add(defaultProfile);
+            Profile defaultProfile = this.CreateNewProfile(Localization.GetLocalizedString("%AnonymousProfileName"), -2);
 
             this.CurrentProfile = defaultProfile;
         }
@@ -126,19 +138,16 @@ public class ProfileManager : MonoBehaviour
         for (int index = 0; index < MaximumNumberOfProfile; index++)
         {
             Profile profile = this.LoadProfile(index);
-
-            if (!string.IsNullOrEmpty(profile.Name))
+            if (profile != null)
             {
-                this.profiles.Add(profile);
+                Debug.Log("Profile loaded: " + profile);
             }
-
-            profile.ProfileChange += this.ProfileChangeDelegate;
-
-            Debug.Log("Profile loaded: " + profile);
         }
 
         string currentProfileName = PlayerPrefs.GetString("CurrentProfileName", string.Empty);
         this.CurrentProfile = string.IsNullOrEmpty(currentProfileName) ? null : this.profiles.Find(profile => profile.Name == currentProfileName);
+
+        this.IsLoaded = true;
     }
 
     private void Save()
@@ -156,7 +165,10 @@ public class ProfileManager : MonoBehaviour
 
             this.SaveProfile(profile, index);
             
-            Debug.Log("Save profile: " + profile);
+            if (profile != null)
+            {
+                Debug.Log("Save profile: " + profile.ToString());
+            }
         }
     }
 
@@ -166,6 +178,14 @@ public class ProfileManager : MonoBehaviour
 
         Profile profile = new Profile();
         profile.LoadProfile(prefix);
+
+        if (string.IsNullOrEmpty(profile.Name))
+        {
+            return null;
+        }
+
+        this.profiles.Add(profile);
+        profile.ProfileChange += this.ProfileChangeDelegate;
 
         return profile;
     }

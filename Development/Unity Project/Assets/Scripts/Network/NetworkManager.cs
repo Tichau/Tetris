@@ -41,7 +41,19 @@ public partial class NetworkManager : MonoBehaviour
         return myRegex.IsMatch(password);
     }
 
-    public void CreateProfile(Profile profile, string password)
+    public bool IsProfileNameValid(string profileName)
+    {
+        // TODO: better check.
+        if (profileName.ToLower() == "anonymous")
+        {
+            return false;
+        }
+
+        Regex myRegex = new Regex("^[a-zA-Z0-9_-]{3,16}$");
+        return myRegex.IsMatch(profileName);
+    }
+
+    public void CreateProfile(Profile profile, string profileName, string password)
     {
         if (profile.IsSynchronized)
         {
@@ -53,7 +65,7 @@ public partial class NetworkManager : MonoBehaviour
             Debug.LogError("The profile " + profile.Name + " has already been created.");
         }
 
-        this.StartCoroutine(this.CreateProfileRequest(profile, password));
+        this.StartCoroutine(this.CreateProfileRequest(profile, profileName, password));
     }
 
     public void ConnectToProfile(Profile profileToConnect, string password)

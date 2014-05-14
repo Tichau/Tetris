@@ -168,12 +168,15 @@ public partial class GUIManager : MonoBehaviour
 
         left = (windowsWidth / 2f) - (buttonWidth / 2f);
         top += 3.5f * buttonHeight * 1.3f;
+
+        bool isProfileNameValid = NetworkManager.Instance.IsProfileNameValid(this.onlineCreateProfileName);
         bool isPasswordValid = NetworkManager.Instance.IsPasswordValid(this.password);
         bool isPasswordsMatch = this.password == this.passwordConfirmation;
-        GUI.enabled = isPasswordValid && isPasswordsMatch; 
+        GUI.enabled = isPasswordValid && isPasswordsMatch && isProfileNameValid; 
+
         if (GUI.Button(new Rect(left, top, buttonWidth, buttonHeight), Localization.GetLocalizedString("%Create"), this.GetGuiStyle(GUIStyleCategory.Dark)))
         {
-            NetworkManager.Instance.CreateProfile(ProfileToConnect, this.password);
+            NetworkManager.Instance.CreateProfile(ProfileToConnect, this.onlineCreateProfileName, this.password);
 
             this.onlineCreateProfileName = null;
             Application.Instance.BackToLastScreen();

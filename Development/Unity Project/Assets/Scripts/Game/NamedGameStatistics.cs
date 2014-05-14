@@ -6,28 +6,37 @@ using UnityEngine;
 
 public class NamedGameStatistics : GameStatistics
 {
-    public NamedGameStatistics() :
+    public NamedGameStatistics(bool isLocal) :
         base()
     {
         this.ProfileName = string.Empty;
+        this.IsLocal = isLocal;
     }
 
-    public NamedGameStatistics(string profileName, int score, int lines, int startLevel) :
+    public NamedGameStatistics(string profileName, int score, int lines, int startLevel, bool isLocal) :
         base(score, lines, startLevel)
     {
         this.ProfileName = profileName;
+        this.IsLocal = isLocal;
     }
 
-    public NamedGameStatistics(string profileName, GameStatistics gameStatistics)
+    public NamedGameStatistics(string profileName, GameStatistics gameStatistics, bool isLocal)
         : base(gameStatistics.Score, gameStatistics.Lines, gameStatistics.StartLevel)
     {
         this.ProfileName = profileName;
+        this.IsLocal = isLocal;
     }
 
     public string ProfileName
     {
         get;
         set;
+    }
+
+    public bool IsLocal
+    {
+        get;
+        private set;
     }
 
     public override void Load(string prefix)

@@ -31,9 +31,10 @@ public class HighScoresManager : MonoBehaviour
         private set;
     }
     
-    public void RegisterScore(Profile profile, GameStatistics gameStatistics)
+    public void RegisterScore(Profile profile, GameStatistics gameStatistics, bool isLocal)
     {
         bool scoreInserted = false;
+        NamedGameStatistics namedGameStatistics = null;
 
         for (int index = 0; index < this.highScores.Count; ++index)
         {
@@ -43,7 +44,9 @@ public class HighScoresManager : MonoBehaviour
             }
 
             scoreInserted = true;
-            this.highScores.Insert(index, new NamedGameStatistics(profile.Name, gameStatistics));
+
+            namedGameStatistics = new NamedGameStatistics(profile.Name, gameStatistics, isLocal);
+            this.highScores.Insert(index, namedGameStatistics);
             break;
         }
 
@@ -53,9 +56,12 @@ public class HighScoresManager : MonoBehaviour
         }
         else if (!scoreInserted && this.highScores.Count < HighScoreCount)
         {
-            this.highScores.Add(new NamedGameStatistics(profile.Name, gameStatistics));
+            namedGameStatistics = new NamedGameStatistics(profile.Name, gameStatistics, isLocal);
+            this.highScores.Add(namedGameStatistics);
         }
 
+        Debug.Log(string.Format("RegisterScore {0}", namedGameStatistics != null ? namedGameStatistics.ToString() : "null"));
+         
         this.Save();
 
         if (this.HighScoresChange != null)
@@ -69,6 +75,8 @@ public class HighScoresManager : MonoBehaviour
         this.highScores.Clear();
         this.highScores.AddRange(gameStatistics);
 
+        this.RegisterUnsynchronizedScores();
+
         this.Save();
     }
 
@@ -77,19 +85,16 @@ public class HighScoresManager : MonoBehaviour
         Instance = this;
     }
 
-    private void Start()
+    private System.Collections.IEnumerator Start()
     {
         this.Load();
 
-        for (int index = 0; index < ProfileManager.Instance.ProfilesCollection.Count; index++)
+        while (!ProfileManager.Instance.IsLoaded)
         {
-            Profile profile = ProfileManager.Instance.ProfilesCollection[index];
-            for (int scoreIndex = 0; scoreIndex < profile.UnsynchronizedScores.Count; scoreIndex++)
-            {
-                GameStatistics unsynchronizedScore = profile.UnsynchronizedScores[scoreIndex];
-                this.RegisterScore(profile, unsynchronizedScore);
-            }
+            yield return null;
         }
+
+        this.RegisterUnsynchronizedScores();
 
         NetworkManager.Instance.RefreshHighscores(HighScoreCount);
     }
@@ -99,7 +104,7 @@ public class HighScoresManager : MonoBehaviour
         for (int index = 0; index < HighScoreCount; index++)
         {
             string prefix = "Highscore" + index;
-            NamedGameStatistics gameStatistics = new NamedGameStatistics();
+            NamedGameStatistics gameStatistics = new NamedGameStatistics(false);
             gameStatistics.Load(prefix);
 
             if (string.IsNullOrEmpty(gameStatistics.ProfileName))
@@ -111,13 +116,35 @@ public class HighScoresManager : MonoBehaviour
         }
     }
 
+    private void RegisterUnsynchronizedScores()
+    {
+        for (int index = 0; index < ProfileManager.Instance.ProfilesCollection.Count; index++)
+        {
+            Profile profile = ProfileManager.Instance.ProfilesCollection[index];
+            for (int scoreIndex = 0; scoreIndex < profile.UnsynchronizedScores.Count; scoreIndex++)
+            {
+                GameStatistics unsynchronizedScore = profile.UnsynchronizedScores[scoreIndex];
+                this.RegisterScore(profile, unsynchronizedScore, true);
+            }
+        }
+    }
+
     private void Save()
     {
-        for (int index = 0; index < this.highScores.Count; index++)
+        NamedGameStatistics emptyStatistics = new NamedGameStatistics(string.Empty, 0, 0, 0, true);
+        for (int index = 0; index < HighScoreCount; index++)
         {
             string prefix = "Highscore" + index;
-            NamedGameStatistics gameStatistics = this.highScores[index];
-            gameStatistics.Save(prefix);
+
+            if (index >= this.highScores.Count || this.highScores[index].IsLocal)
+            {
+                emptyStatistics.Save(prefix);
+                Debug.Log("Save in slot " + prefix + " empty profile");
+                continue;
+            }
+            
+            this.highScores[index].Save(prefix);
+            Debug.Log("Save in slot " + prefix + ": " + this.highScores[index]);
         }
     }
 }

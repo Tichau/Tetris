@@ -145,7 +145,7 @@ public partial class NetworkManager
         this.requestInProgress = false;
     }
 
-    private IEnumerator CreateProfileRequest(Profile profile, string password)
+    private IEnumerator CreateProfileRequest(Profile profile, string profileName, string password)
     {
         // Wait the end of the last request.
         while (this.requestInProgress)
@@ -158,7 +158,7 @@ public partial class NetworkManager
         Debug.Log(string.Format("[NetworkRequest] CreateProfile\nProfile: {0}.", profile));
 
         string operation = ProfileManagementOperation.CreateProfile.ToString();
-        string profileName = profile.Name.ToLower();
+        profileName = profileName.ToLower();
 
         password = this.Md5Sum(password);
 
@@ -183,6 +183,7 @@ public partial class NetworkManager
             if (int.TryParse(results[1], out profileId))
             {
                 ((IProfileManagement)profile).SetId(profileId);
+                ((IProfileManagement)profile).SetName(profileName);
                 ((IProfileManagement)profile).SetPassword(password);
             }
             else
@@ -379,7 +380,7 @@ public partial class NetworkManager
                     continue;
                 }
 
-                requestResult.Add(new NamedGameStatistics(profileName, score, lines, startLevel));
+                requestResult.Add(new NamedGameStatistics(profileName, score, lines, startLevel, false));
             }
 
             HighScoresManager.Instance.RegisterScores(requestResult);
